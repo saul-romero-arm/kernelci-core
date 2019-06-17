@@ -1,0 +1,38 @@
+@Library('kernelci') _
+import org.kernelci.debian.RootFS
+
+/* ----------------------------------------------------------------------------
+ * Jenkins parameters
+
+DOCKER_BASE
+  Dockerhub base address used for the build images
+
+*/
+
+def r = new RootFS()
+
+def config = [
+    'name': "buster-igt",
+    'arch_list': [
+        "amd64",
+        "armhf",
+        "arm64",
+    ],
+    'debian_release':"buster",
+    'extra_packages':"\
+libcairo2 \
+libdw1 \
+libglib2.0-0 \
+libkmod2 \
+libpciaccess0 \
+libprocps7 \
+libssl1.1 \
+libudev1 \
+libunwind8 \
+liblzma5",
+    'extra_packages_remove':"bash e2fslibs e2fsprogs",
+    'script':"scripts/buster-igt.sh",
+    'docker_image': "${params.DOCKER_BASE}debos",
+]
+
+r.buildImage(config)
