@@ -1,0 +1,17 @@
+- test:
+    namespace: tlxc
+    timeout:
+      minutes: 30
+    definitions:
+    - from: inline
+      name: sei510-images
+      path: inline/sei510-images.yaml
+      repository:
+        metadata:
+          description: sei510 images
+          format: Lava-Test Test Definition 1.0
+          name: sei510-images
+        run:
+          steps:
+          - cd /lava-lxc
+          - mkbootimg --kernel {{ kernel_image }} --second {{ dtb_short }} --ramdisk rootfs.cpio.gz --cmdline "console=ttyAML0,115200 consoleblank=0 earlycon" --kernel_offset 0x01080000 --ramdisk_offset 0x6000000 --second_offset 0x1000000 -o boot.img
