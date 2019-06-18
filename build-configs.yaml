@@ -130,6 +130,11 @@ fragments:
   linaro_android_recommended:
     path: "android/configs/android-recommended.cfg"
 
+  panfrost:
+    path: "kernel/configs/panfrost.config"
+    configs:
+      - 'CONFIG_DRM_PANFROST=m'
+
   tinyconfig:
     path: "kernel/configs/tiny.config"
     defconfig: 'tinyconfig'
@@ -509,6 +514,7 @@ build_configs:
     variants:
       gcc-8:
         build_environment: gcc-8
+        fragments: [panfrost]
         architectures:
           arc:
             base_defconfig: 'nsim_hs_defconfig'
@@ -535,6 +541,7 @@ build_configs:
               - whitelist: {defconfig: ['x86_64_defconfig']}
       clang-8:
         build_environment: clang-8
+        fragments: [panfrost]
         architectures:
           arm: *staging_arm
           arm64: *staging_arm64
