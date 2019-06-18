@@ -541,7 +541,6 @@ build_configs:
               - whitelist: {defconfig: ['x86_64_defconfig']}
       clang-8:
         build_environment: clang-8
-        fragments: [panfrost]
         architectures:
           arm: *staging_arm
           arm64: *staging_arm64
