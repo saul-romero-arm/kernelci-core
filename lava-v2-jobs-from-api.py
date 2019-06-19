@@ -176,6 +176,7 @@ def get_job_params(config, test_config, defconfig, opts, build, plan):
         'plan_name': test_plan.name,
         'file_server_resource': file_server_resource,
         'build_environment': build.get('build_environment'),
+        'boot_image':config.get('boot_image'),
     }
 
     job_params.update(test_plan.params)
@@ -335,6 +336,8 @@ if __name__ == '__main__':
                         help="type of dataset to receive in callback")
     parser.add_argument("--defconfigs", default=0,
                         help="Expected number of defconfigs from the API")
+    parser.add_argument("--image-name", default="boot.img", dest='boot_image',
+                        action='store', help="set the name of the boot.img")
     parser.add_argument("--defconfig_full",
                         help="Only look for builds from this full defconfig")
     args = vars(parser.parse_args())
