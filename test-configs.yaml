@@ -815,18 +815,19 @@ device_types:
       - whitelist: {defconfig: ['defconfig']}
       - blacklist: {kernel: ['v3.']}
 
-  qemu_arm:
-    name: qemu
+  qemu-arm-virt:
     mach: qemu
     arch: arm
+    # for virt-2.11 see https://bugzilla.redhat.com/show_bug.cgi?id=1633328
+    context: { arch: 'arm', machine: 'virt-2.11', cpu: 'cortex-a15', model: 'model=virtio', guestfs_interface: virtio }
     boot_method: qemu
     filters:
-      - whitelist: {defconfig: ['multi_v7_defconfig', 'vexpress_defconfig']}
+      - whitelist: {defconfig: ['multi_v7_defconfig']}
 
-  qemu_arm64:
-    name: qemu
+  qemu-arm64-virt:
     mach: qemu
     arch: arm64
+    context: { arch: 'arm64', machine: 'virt', guestfs_interface: virtio }
     boot_method: qemu
     filters:
       - whitelist: {defconfig: ['defconfig']}
@@ -843,6 +844,7 @@ device_types:
     name: qemu
     mach: qemu
     arch: x86_64
+    context: { arch: 'x86_64', model: 'model=virtio', guestfs_interface: virtio }
     boot_method: qemu
     filters:
       - whitelist: {defconfig: ['defconfig']}
@@ -1302,6 +1304,7 @@ test_configs:
   - device_type: qcom_qdf2400
     test_plans: [boot]
 
+<<<<<<< HEAD
   - device_type: qemu_arm
     test_plans:
       - boot_qemu
@@ -1322,6 +1325,12 @@ test_configs:
     test_plans:
       - boot
       - uefi-x86_i386
+
+  - device_type: qemu-arm-virt
+    test_plans: [boot_qemu, simple_qemu, v4l2_compliance_qemu_vivid]
+
+  - device_type: qemu-arm64-virt
+    test_plans: [boot_qemu, simple_qemu, v4l2_compliance_qemu_vivid]
 
   - device_type: qemu_x86_64
     test_plans:
