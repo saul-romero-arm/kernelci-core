@@ -558,6 +558,14 @@ class DeviceType(YAMLObject):
         )
 
 
+class DeviceType_arc(DeviceType):
+
+    def __init__(self, name, mach, arch='arc', *args, **kw):
+        """arc device type with a device tree."""
+        kw.setdefault('dtb', '{}.dtb'.format(name))
+        super(DeviceType_arc, self).__init__(name, mach, arch, *args, **kw)
+
+
 class DeviceType_arm(DeviceType):
 
     def __init__(self, name, mach, arch='arm', *args, **kw):
@@ -586,6 +594,7 @@ class DeviceTypeFactory(YAMLObject):
     """Factory to create device types from YAML data."""
 
     _classes = {
+        'arc-dtb': DeviceType_arc,
         'mips-dtb': DeviceType_mips,
         'arm-dtb': DeviceType_arm,
         'arm64-dtb': DeviceType_arm64,
