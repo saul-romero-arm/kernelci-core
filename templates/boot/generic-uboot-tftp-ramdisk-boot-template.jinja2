@@ -6,6 +6,8 @@
 {{ super() }}
 {% endblock %}
 {% block actions %}
+context:
+  extra_kernel_args: console_msg_format=syslog
 {%- block deploy %}
 {{ super () }}
 {%- endblock %}
