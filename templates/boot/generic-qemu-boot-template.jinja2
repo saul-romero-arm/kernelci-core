@@ -34,7 +34,7 @@ actions:
     images:
       kernel:
 {%- block image_arg %}
-        image_arg: '-kernel {kernel} -append "console={{ console_dev }},115200 root=/dev/ram0 debug verbose"'
+        image_arg: '-kernel {kernel} -append "console={{ console_dev }},115200 root=/dev/ram0 debug verbose console_msg_format=syslog"'
 {%- endblock %}
         url: {{ kernel_url }}
       ramdisk:
