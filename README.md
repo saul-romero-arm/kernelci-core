@@ -50,7 +50,7 @@ the `jenkins` directory:
 * [`jenkins/build-trigger.jpl`](https://github.com/kernelci/kernelci-core/tree/master/jenkins/build-trigger.jpl) to trigger all the builds for a kernel revision
 * [`jenkins/build.jpl`](https://github.com/kernelci/kernelci-core/tree/master/jenkins/build.jpl) to build each individual kernel
 * [`jenkins/bisect.jpl`](https://github.com/kernelci/kernelci-core/tree/master/jenkins/bisect.jpl) to run boot bisections
-* [`jenkins/stretch.jpl`](https://github.com/kernelci/kernelci-core/tree/master/jenkins/stretch.jpl) to build a Debian Stretch file system
+* [`jenkins/buster.jpl`](https://github.com/kernelci/kernelci-core/tree/master/jenkins/buster.jpl) to build a Debian Buster file system
 
 There are other variants based on `stretch.jpl` to build other file systems
 with extra tools needed to run specific test suites.
@@ -74,3 +74,14 @@ The kernelci.org tests typically run in [LAVA](https://lavasoftware.org/).
 Each LAVA test is generated using template files which can be found in the
 [`templates`](https://github.com/kernelci/kernelci-core/tree/master/templates)
 directory.
+
+# Reproducing KernelCI steps locally
+
+It's possible to reproduce KernelCI builds locally, see the
+[KernelCI command line](https://github.com/kernelci/kernelci-doc/wiki/KernelCI-command-line)
+wiki page.
+
+All the KernelCI steps are being gradually refactored into command line tools
+in order to be able to run them in a terminal, or in any automation system
+rather than just Jenkins.  The next steps to be added are to generate and
+submit test jobs and to run bisections.
