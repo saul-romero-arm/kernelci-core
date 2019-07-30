@@ -53,10 +53,10 @@ BUILD_ENVIRONMENT
   Name of the build environment
 LAB
   Name of the lab in which to run the bisection tests
-TEST_SUITE
-  Name of the test suite
+TEST_PLAN
+  Name of the KernelCI test plan
 TEST_CASE
-  Optional name of the test case to bisect in the test suite
+  Optional test case name in dotted syntax (i.e. suite.set.case)
 TEST_RUNS (1)
   Number of LAVA jobs to run before considering pass or fail.
 KCI_API_URL (https://api.kernelci.org)
@@ -294,7 +294,7 @@ def submitJob(kci_core, describe, hook) {
 --lab=${params.LAB} \
 --builds=${env._BUILD_JSON} \
 --storage=${params.KCI_STORAGE_URL} \
---plans=${params.TEST_SUITE} \
+--plans=${params.TEST_PLAN} \
 --jobs=data \
 --arch=${params.ARCH} \
 --tree=${params.KERNEL_TREE} \
@@ -340,7 +340,6 @@ def getResult(kci_core, hook) {
 PYTHON_EGG_CACHE=${egg_cache} \
 ./lava-v2-callback.py \
 --token=${SECRET} \
---suite=${params.TEST_SUITE} \
 --case=${params.TEST_CASE} \
 ${json_file}
 """)
@@ -471,8 +470,10 @@ def bisectNext(kdir, status) {
 
 def pushResults(kci_core, kdir, checks, params_summary) {
     def subject = "\
-${params.KERNEL_TREE}/${params.KERNEL_BRANCH} ${params.TEST_SUITE} \
-bisection: ${params.KERNEL_NAME} on ${params.TARGET}"
+${params.KERNEL_TREE}/${params.KERNEL_BRANCH} \
+${params.TEST_PLAN} ${params.TEST_CASE} \
+bisection: ${params.KERNEL_NAME} on \
+${params.TARGET}"
 
     dir(kci_core) {
         withCredentials([string(credentialsId: params.KCI_TOKEN_ID,
@@ -492,7 +493,7 @@ PYTHON_EGG_CACHE=${egg_cache} \
 --tree=${params.KERNEL_TREE} \
 --kernel=${params.KERNEL_NAME} \
 --branch=${params.KERNEL_BRANCH} \
---suite=${params.TEST_SUITE} \
+--plan=${params.TEST_PLAN} \
 --case=${params.TEST_CASE} \
 --good=${params.GOOD_COMMIT} \
 --bad=${params.BAD_COMMIT} \
@@ -672,7 +673,7 @@ node("docker && bisection") {
     Lab:       ${params.LAB}
     Defconfig: ${params.DEFCONFIG}
     Compiler:  ${params.BUILD_ENVIRONMENT}
-    Suite:     ${params.TEST_SUITE}
+    Plan:      ${params.TEST_PLAN}
     Test case: ${params.TEST_CASE}"""
     print("""\
     Good:      ${params.GOOD_COMMIT}
