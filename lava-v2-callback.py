@@ -70,16 +70,31 @@ def handle_boot(cb):
     return BOOT_STATUS_MAP.get(job_status, BISECT_SKIP)
 
 
-def handle_test(cb, suite_name, case_name):
+def handle_test(cb, full_case_name):
+    name_split = full_case_name.split('.')
+    test_name = name_split.pop()
+    test_suite = name_split.pop()
+    # ToDo: handle test sets
+    if name_split:
+        raise Exception("Test sets not supported yet...")
+        test_set = test_suite
+        test_suite = name_split.pop()
+    else:
+        test_set = None
+
+    print("suite: {}, set: {}, test: {}".format(
+        test_suite, test_set, test_name))
+
     results = cb['results']
     for name, test_results_yaml in results.items():
         if name == 'lava':
+            # ToDo: handle login test case (reuse backend code...)
             continue
         name = name.partition("_")[2]
-        if name == suite_name:
+        if name == test_suite:
             test_results = yaml.load(test_results_yaml)
             for test_case in test_results:
-                if test_case['name'] == case_name:
+                if test_case['name'] == test_name:
                     test_case_result = test_case['result']
                     print("Test case result: {}".format(test_case_result))
                     return TEST_CASE_STATUS_MAP[test_case_result]
@@ -99,8 +114,8 @@ def main(args):
     if is_infra_error(cb):
         print("Infrastructure error")
         ret = BISECT_SKIP
-    elif args.suite and args.case:
-        ret = handle_test(cb, args.suite, args.case)
+    elif args.case:
+        ret = handle_test(cb, args.case)
     else:
         ret = handle_boot(cb)
 
@@ -113,9 +128,7 @@ if __name__ == '__main__':
                         help="Path to the JSON data file")
     parser.add_argument("--token",
                         help="Secret authorization token")
-    parser.add_argument("--suite",
-                        help="Test suite name")
     parser.add_argument("--case",
-                        help="Test case name")
+                        help="Test case name in dotted syntax")
     args = parser.parse_args()
     main(args)
