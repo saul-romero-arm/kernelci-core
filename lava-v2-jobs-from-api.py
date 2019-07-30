@@ -174,6 +174,7 @@ def get_job_params(config, test_config, defconfig, opts, build, plan):
         'context': device_type.context,
         'rootfs_prompt': rootfs.prompt,
         'plan_name': test_plan.name,
+        'job_timeout': config.get('job_timeout')
         'file_server_resource': file_server_resource,
         'build_environment': build.get('build_environment'),
     }
@@ -317,6 +318,8 @@ if __name__ == '__main__':
                         help="section in the KernelCI config file")
     parser.add_argument("--plans", nargs='+', required=True,
                         help="test plan to create jobs for")
+    parser.add_argument("--job_timeout", default="10", dest='job_timeout',
+                        action='store', help="the overall job timeout in min")
     parser.add_argument("--arch", required=True,
                         help="specific architecture to create jobs for")
     parser.add_argument("--targets", nargs='+',
