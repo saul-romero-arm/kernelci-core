@@ -670,6 +670,14 @@ device_types:
     filters:
       - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
 
+  meson_g12b_odroid_n2:
+    name: 'meson-g12b-odroid-n2'
+    mach: amlogic
+    class: arm64-dtb
+    boot_method: uboot
+    filters:
+      - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
+
   meson_gxbb_p200:
     name: 'meson-gxbb-p200'
     mach: amlogic
@@ -1253,6 +1261,9 @@ test_configs:
 
   - device_type: meson-g12a-x96-max
     test_plans: [boot, simple]
+
+  - device_type: meson-g12b-odroid-n2
+    test_plan: [boot, simple]
 
   - device_type: meson_gxbb_p200
     test_plans: [boot, kselftest]
