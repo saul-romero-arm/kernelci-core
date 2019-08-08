@@ -1001,6 +1001,16 @@ device_types:
     class: arm64-dtb
     boot_method: uboot
 
+  sun50i-h6-orangepi-one-plus:
+    mach: allwinner
+    class: arm64-dtb
+    boot_method: uboot
+
+  sun50i-h6-pine-h64:
+    mach: allwinner
+    class: arm64-dtb
+    boot_method: uboot
+
   sun5i-a13-olinuxino-micro:
     mach: allwinner
     class: arm-dtb
@@ -1447,6 +1457,12 @@ test_configs:
     test_plans: [boot]
 
   - device_type: sun50i_h5_libretech_all_h3_cc
+    test_plans: [boot]
+
+  - device_type: sun50i-h6-orangepi-one-plus
+    test_plans: [boot]
+
+  - device_type: sun50i-h6-pine-h64
     test_plans: [boot]
 
   - device_type: sun5i-a13-olinuxino-micro
