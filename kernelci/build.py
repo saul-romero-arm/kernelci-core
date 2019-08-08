@@ -464,6 +464,7 @@ def _make_defconfig(defconfig, kwargs, fragments):
                     tmpfile.writelines(frag)
                 fragments.append(os.path.basename(os.path.splitext(d)[0]))
     tmpfile.flush()
+
     if not _run_make(target=target, **kwargs):
         result = False
 
@@ -477,8 +478,12 @@ def _make_defconfig(defconfig, kwargs, fragments):
         cmd = """\
 cd {kdir}
 export ARCH={arch}
+export HOSTCC={cc}
+export CC={cc}
+export CROSS_COMPILE={cross}
 scripts/kconfig/merge_config.sh -O {output} '{base}' '{frag}' > /dev/null 2>&1
-""".format(kdir=kdir, arch=kwargs['arch'], output=rel_path,
+""".format(kdir=kdir, arch=kwargs['arch'], cc=kwargs['cc'],
+           cross=kwargs['cross_compile'], output=rel_path,
            base=os.path.join(rel_path, '.config'),
            frag=os.path.join(rel_path, kconfig_frag_name))
         print(cmd.strip())
@@ -510,7 +515,7 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
     was any build error.
     """
     cc = build_env.cc
-    cross_compile = build_env.get_cross_compile(arch) or None
+    cross_compile = build_env.get_cross_compile(arch) or ''
     use_ccache = shell_cmd("which ccache > /dev/null", True)
     if jopt is None:
         jopt = int(shell_cmd("nproc")) + 2
@@ -573,7 +578,7 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
         opts.update({
             'INSTALL_MOD_PATH': mod_path,
             'INSTALL_MOD_STRIP': '1',
-            'STRIP': "{}strip".format(cross_compile or ''),
+            'STRIP': "{}strip".format(cross_compile),
         })
         result = _run_make(target='modules_install', **kwargs)
 
