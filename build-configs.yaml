@@ -541,7 +541,9 @@ build_configs:
         build_environment: clang-8
         architectures:
           arm: *staging_arm
-          arm64: *staging_arm64
+          arm64:
+            extra_configs:
+              - 'defconfig+CONFIG_CPU_BIG_ENDIAN=y'
 
   khilman:
     tree: khilman
