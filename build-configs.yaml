@@ -503,10 +503,12 @@ build_configs:
             base_defconfig: 'multi_v7_defconfig'
             filters:
               - whitelist: {defconfig: ['multi_v7_defconfig']}
-          arm64: &staging_arm64
+          arm64:
             filters:
               - whitelist: {defconfig: ['defconfig']}
             fragments: [kselftest]
+            extra_configs:
+              - 'defconfig+CONFIG_CPU_BIG_ENDIAN=y'
           i386:
             base_defconfig: 'i386_defconfig'
             filters:
@@ -526,7 +528,9 @@ build_configs:
         build_environment: clang-8
         architectures:
           arm: *staging_arm
-          arm64: *staging_arm64
+          arm64:
+            extra_configs:
+              - 'defconfig+CONFIG_CPU_BIG_ENDIAN=y'
 
   khilman:
     tree: khilman
