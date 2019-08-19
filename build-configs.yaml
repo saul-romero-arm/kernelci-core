@@ -19,8 +19,8 @@ trees:
   ardb:
     url: "git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git"
 
-  arm-soc:
-    url: "https://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git"
+  soc:
+    url: "https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git"
 
   arnd:
     url: "https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git"
@@ -450,12 +450,12 @@ build_configs:
 #  Disabled as the branch name contains a '/'.  See discussion here:
 #  https://github.com/kernelci/kernelci-core/issues/23
 #
-#  arm-soc_fixes:
-#    tree: arm-soc
+#  soc_fixes:
+#    tree: soc
 #    branch: 'arm/fixes'
 
-  arm-soc_for-next:
-    tree: arm-soc
+  soc_for-next:
+    tree: soc
     branch: 'for-next'
 
   broonie-regmap:
