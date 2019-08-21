@@ -511,6 +511,10 @@ build_configs:
             filters:
               - whitelist: {defconfig: ['defconfig']}
             fragments: [kselftest]
+          i386:
+            base_defconfig: 'i386_defconfig'
+            filters:
+              - whitelist: {defconfig: ['i386_defconfig']}
           mips:
             base_defconfig: '32r2el_defconfig'
             filters:
