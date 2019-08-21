@@ -501,7 +501,7 @@ class DeviceType(YAMLObject):
     """Device type model."""
 
     def __init__(self, name, mach, arch, boot_method, dtb=None,
-                 flags=None, filters=None, context=None):
+                 flags=None, filters=None, context=None, params=None):
         """A device type describes a category of equivalent hardware devices.
 
         *name* is unique for the device type, typically as used by LAVA.
@@ -518,6 +518,7 @@ class DeviceType(YAMLObject):
         self._arch = arch
         self._boot_method = boot_method
         self._dtb = dtb
+        self._params = params or dict()
         self._flags = flags or list()
         self._filters = filters or list()
         self._context = context or dict()
@@ -544,6 +545,10 @@ class DeviceType(YAMLObject):
     @property
     def dtb(self):
         return self._dtb
+
+    @property
+    def params(self):
+        return dict(self._params)
 
     @property
     def context(self):
@@ -605,7 +610,7 @@ class DeviceTypeFactory(YAMLObject):
     @classmethod
     def from_yaml(cls, name, device_type, default_filters=None):
         kw = cls._kw_from_yaml(device_type, [
-            'mach', 'arch', 'boot_method', 'dtb', 'flags', 'context'])
+            'mach', 'arch', 'boot_method', 'dtb', 'flags', 'context', 'params'])
         kw.update({
             'name': device_type.get('name', name),
             'filters': FilterFactory.from_data(device_type, default_filters),
