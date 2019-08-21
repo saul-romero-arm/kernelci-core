@@ -160,72 +160,52 @@ test_plans:
             - 'defconfig+virtualvideo'
             - 'multi_v7_defconfig+virtualvideo'
 
-  uefi-arm64-gicv2:
-    rootfs: buildroot_ramdisk
-    params:
-        ctx_gicversion: "gic-version=2"
-        ctx_cpu: "cortex-a57"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-AARCH64-RELEASE-111bbcf87621'
-    pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['defconfig']}
-
-  uefi-arm64-gicv3:
-    rootfs: buildroot_ramdisk
-    params:
-        ctx_gicversion: "gic-version=3"
-        ctx_cpu: "cortex-a57"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-AARCH64-RELEASE-111bbcf87621'
-    pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['defconfig']}
-
   uefi-arm-gicv2:
     rootfs: buildroot_ramdisk
-    params:
-        ctx_gicversion: "gic-version=2"
-        ctx_cpu: "cortex-a15"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-ARM-RELEASE-111bbcf87621'
     pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['multi_v7_defconfig']}
+    params:
+      ctx_gicversion: "gic-version=2"
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-ARM-RELEASE-111bbcf87621'
 
   uefi-arm-gicv3:
     rootfs: buildroot_ramdisk
-    params:
-        ctx_gicversion: "gic-version=3"
-        ctx_cpu: "cortex-a15"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-ARM-RELEASE-111bbcf87621'
     pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['multi_v7_defconfig']}
+    params:
+      ctx_gicversion: "gic-version=3"
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-ARM-RELEASE-111bbcf87621'
+
+  uefi-arm64-gicv2:
+    rootfs: buildroot_ramdisk
+    pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
+    params:
+      ctx_gicversion: "gic-version=2"
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-AARCH64-RELEASE-111bbcf87621'
+
+  uefi-arm64-gicv3:
+    rootfs: buildroot_ramdisk
+    pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
+    params:
+      ctx_gicversion: "gic-version=3"
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/QEMU_EFI.fd-AARCH64-RELEASE-111bbcf87621'
 
   uefi-x86_64:
     rootfs: buildroot_ramdisk
-    params:
-        ctx_cpu: "host"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-X64-RELEASE-111bbcf87621'
     pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['defconfig']}
+    params:
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-X64-RELEASE-111bbcf87621'
 
   uefi-x86_i386:
     rootfs: buildroot_ramdisk
-    params:
-        ctx_cpu: "host"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32-RELEASE-111bbcf87621'
     pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['i386_defconfig']}
+    params:
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32-RELEASE-111bbcf87621'
 
   uefi-x86-mixed:
     rootfs: buildroot_ramdisk
-    params:
-        ctx_cpu: "i386"
-        image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32-RELEASE-111bbcf87621'
     pattern: 'uefi/generic-qemu-uefi-boot-template.jinja2'
-    filters:
-      - whitelist: {defconfig: ['i386_defconfig']}
+    params:
+      image_url_uefi: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32-RELEASE-111bbcf87621'
+
 
 device_default_filters:
 
