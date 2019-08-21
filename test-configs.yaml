@@ -139,27 +139,6 @@ test_plans:
   sleep:
     rootfs: debian_buster_ramdisk
 
-  usb:
-    rootfs: debian_buster_ramdisk
-
-  v4l2_compliance_uvc:
-    name: v4l2-compliance-uvc
-    rootfs: debian_stretch-v4l2_ramdisk
-    # FIXME - this is not very sustainable, improve template naming scheme
-    pattern: 'v4l2-compliance/{category}-{method}-{protocol}-{rootfs}-v4l2-compliance-template.jinja2'
-    params: {v4l2_driver: "uvcvideo"}
-
-  v4l2_compliance_qemu_vivid:
-    name: v4l2-compliance-vivid
-    rootfs: debian_stretch-v4l2_ramdisk
-    pattern: 'v4l2-compliance/generic-qemu-v4l2-compliance-template.jinja2'
-    params: {v4l2_driver: "vivid"}
-    filters:
-      - whitelist:
-          defconfig:
-            - 'defconfig+virtualvideo'
-            - 'multi_v7_defconfig+virtualvideo'
-
   uefi-arm-gicv2:
     rootfs: buildroot_ramdisk
     pattern: 'boot/generic-qemu-boot-template.jinja2'
@@ -205,6 +184,27 @@ test_plans:
     pattern: 'boot/generic-qemu-boot-template.jinja2'
     params:
       bios_url: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32-RELEASE-111bbcf87621'
+
+  usb:
+    rootfs: debian_buster_ramdisk
+
+  v4l2_compliance_uvc:
+    name: v4l2-compliance-uvc
+    rootfs: debian_stretch-v4l2_ramdisk
+    # FIXME - this is not very sustainable, improve template naming scheme
+    pattern: 'v4l2-compliance/{category}-{method}-{protocol}-{rootfs}-v4l2-compliance-template.jinja2'
+    params: {v4l2_driver: "uvcvideo"}
+
+  v4l2_compliance_qemu_vivid:
+    name: v4l2-compliance-vivid
+    rootfs: debian_stretch-v4l2_ramdisk
+    pattern: 'v4l2-compliance/generic-qemu-v4l2-compliance-template.jinja2'
+    params: {v4l2_driver: "vivid"}
+    filters:
+      - whitelist:
+          defconfig:
+            - 'defconfig+virtualvideo'
+            - 'multi_v7_defconfig+virtualvideo'
 
 
 device_default_filters:
@@ -1287,28 +1287,30 @@ test_configs:
     test_plans:
       - boot_qemu
       - simple_qemu
-      - v4l2_compliance_qemu_vivid
       - uefi-arm-gicv2
       - uefi-arm-gicv3
+      - v4l2_compliance_qemu_vivid
 
   - device_type: qemu_arm64
     test_plans:
       - boot_qemu
       - simple_qemu
-      - v4l2_compliance_qemu_vivid
       - uefi-arm64-gicv2
       - uefi-arm64-gicv3
+      - v4l2_compliance_qemu_vivid
+
+  - device_type: qemu_i386
+    test_plans:
+      - boot
+      - uefi-x86_i386
 
   - device_type: qemu_x86_64
     test_plans:
       - boot_qemu
       - simple_qemu
-      - v4l2_compliance_qemu_vivid
       - uefi-x86_64
       - uefi-x86-mixed
-
-  - device_type: qemu_i386
-    test_plans: [uefi-x86_i386]
+      - v4l2_compliance_qemu_vivid
 
   - device_type: r8a7791_porter
     test_plans: [boot]
