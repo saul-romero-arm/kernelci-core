@@ -183,7 +183,7 @@ test_plans:
     rootfs: buildroot_ramdisk
     pattern: 'boot/generic-qemu-boot-template.jinja2'
     params:
-      bios_url: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32-RELEASE-111bbcf87621'
+      bios_url: 'https://staging-storage.kernelci.org/images/uefi/111bbcf87621/OVMF.fd-IA32X64-RELEASE-111bbcf87621'
 
   usb:
     rootfs: debian_buster_ramdisk
