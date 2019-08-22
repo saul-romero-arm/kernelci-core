@@ -583,6 +583,12 @@ device_types:
     filters:
       - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
 
+  meson8b-ec100:
+    name: 'meson8b-ec100'
+    mach: meson
+    class: arm-dtb
+    boot_method: uboot
+
   meson-g12a-sei510:
     mach: amlogic
     class: arm64-dtb
@@ -620,8 +626,24 @@ device_types:
     filters:
       - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
 
+  meson-gxl-s805x-libretech-ac:
+    mach: amlogic
+    class: arm64-dtb
+    boot_method: uboot
+    flags: ['big_endian']
+    filters:
+      - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
+
   meson_gxl_s805x_p241:
     name: 'meson-gxl-s805x-p241'
+    mach: amlogic
+    class: arm64-dtb
+    boot_method: uboot
+    flags: ['big_endian']
+    filters:
+      - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
+
+  meson-gxl-s905d-p230:
     mach: amlogic
     class: arm64-dtb
     boot_method: uboot
@@ -640,6 +662,14 @@ device_types:
 
   meson_gxl_s905x_khadas_vim:
     name: 'meson-gxl-s905x-khadas-vim'
+    mach: amlogic
+    class: arm64-dtb
+    boot_method: uboot
+    flags: ['big_endian']
+    filters:
+      - blacklist: {defconfig: ['allnoconfig', 'allmodconfig']}
+
+  meson-gxl-s905x-p212:
     mach: amlogic
     class: arm64-dtb
     boot_method: uboot
@@ -1190,6 +1220,9 @@ test_configs:
   - device_type: kirkwood_db_88f6282
     test_plans: [boot_nfs]
 
+  - device_type: meson8b-ec100
+    test_plans: [boot, simple]
+
   - device_type: meson-g12a-sei510
     test_plans: [boot, simple, boot_fastboot]
 
@@ -1202,10 +1235,19 @@ test_configs:
   - device_type: meson_gxbb_p200
     test_plans: [boot, kselftest]
 
+  - device_type: meson-gxl-s805x-libretech-ac
+    test_plans: [boot, kselftest, simple]
+
   - device_type: meson_gxl_s805x_p241
     test_plans: [boot, kselftest, simple]
 
+  - device_type: meson-gxl-s905d-p230
+    test_plans: [boot, kselftest, simple]
+
   - device_type: meson_gxl_s905x_khadas_vim
+    test_plans: [boot, kselftest, simple]
+
+  - device_type: meson-gxl-s905x-p212
     test_plans: [boot, kselftest, simple]
 
   - device_type: meson_gxl_s905x_libretech_cc
