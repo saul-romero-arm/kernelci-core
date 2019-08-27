@@ -20,16 +20,17 @@
 {{ super() }}
 {% endblock %}
 {% block main %}
+{%- do context.update({
+  "arch": ctx_arch,
+  "cpu": ctx_cpu,
+  "guestfs_interface": "virtio",
+}) %}
+{%- if qemu_machine %}
+{% do context.update({"machine": qemu_machine}) %}
+{%- endif %}
 {{ super() }}
 {% endblock %}
 {% block actions %}
-context:
-  arch: {{ ctx_arch }}
-  cpu: {{ ctx_cpu }}
-  guestfs_interface: virtio
-{%- if qemu_machine %}
-  machine: {{ qemu_machine }}
-{%- endif %}
 
 actions:
 - deploy:
