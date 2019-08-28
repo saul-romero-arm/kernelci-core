@@ -494,6 +494,7 @@ build_configs:
     variants:
       gcc-8:
         build_environment: gcc-8
+        fragments: [virtualvideo]
         architectures:
           arc:
             base_defconfig: 'nsim_hs_defconfig'
