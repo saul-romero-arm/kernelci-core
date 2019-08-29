@@ -12,7 +12,7 @@ DOCKER_BASE
 def r = new RootFS()
 
 def config = ['name':"buster-v4l2",
-              'arch_list':["armhf"],
+              'arch_list':["armhf", "arm64", "amd64"],
               'debian_release':"buster",
               'extra_packages':"",
               'extra_packages_remove':"bash e2fsprogs e2fslibs",
