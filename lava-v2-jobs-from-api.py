@@ -119,7 +119,7 @@ def get_job_params(config, test_config, defconfig, opts, build, plan):
         url_px = '/'.join(parts)
 
     job_name = '-'.join([job_name_prefix, dtb or 'no-dtb',
-                         device_type.type_name, plan])
+                         device_type.name, plan])
 
     base_url = urlparse.urljoin(storage, '/'.join([url_px, '']))
     kernel_url = urlparse.urljoin(
@@ -158,7 +158,7 @@ def get_job_params(config, test_config, defconfig, opts, build, plan):
         'fastboot': str(device_type.get_flag('fastboot')).lower(),
         'priority': config.get('priority'),
         'device_type': device_type.name,
-        'device_type_name': device_type.type_name,
+        'base_device_type': device_type.base_name,
         'template_file': template_file,
         'base_url': base_url,
         'endian': opts['endian'],
