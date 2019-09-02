@@ -77,12 +77,12 @@ test_plans:
   baseline:
     rootfs: buildroot_baseline_ramdisk
     filters:
-      - blacklist: *kselftest_defconfig_clang_environment_filter
+      - blacklist: *kselftest_defconfig_filter
 
   boot:
     rootfs: buildroot_ramdisk
     filters:
-      - blacklist: *kselftest_defconfig_clang_environment_filter
+      - blacklist: *kselftest_defconfig_filter
 
   boot_fastboot:
     name: 'boot-fastboot'
@@ -112,14 +112,11 @@ test_plans:
             - ['arm', 'at91_dt_defconfig']
             - ['arm', 'davinci_all_defconfig']
             - ['arm64', 'defconfig']
-      - blacklist: *clang_environment_filter
 
   boot_qemu:
     name: boot
     rootfs: buildroot_ramdisk
     pattern: 'boot/generic-qemu-boot-template.jinja2'
-    filters:
-      - blacklist: *clang_environment_filter
 
   cros-ec:
     rootfs: debian_buster_ramdisk
