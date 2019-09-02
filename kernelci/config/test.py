@@ -392,6 +392,17 @@ class TestConfig(YAMLObject):
         return self._test_plans
 
     def match(self, arch, flags, config, plan=None):
+        if True:
+            print("{} {} (listed: {}), {} {}, {} {}, filters: {}".format(
+                plan,
+                plan and self._test_plans[plan].match(config),
+                plan in self._test_plans,
+                arch,
+                self.device_type.arch == arch,
+                config,
+                self.device_type.match(flags, config),
+                all(f.match(**config) for f in self._filters)
+            ))
         return (
             plan is None or (
                 plan in self._test_plans and
