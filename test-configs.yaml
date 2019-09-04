@@ -20,6 +20,12 @@ file_system_types:
       armhf: [{arch: arm}]
       amd64: [{arch: x86_64}]
 
+  debian_staging:
+    url: 'http://staging-storage.kernelci.org/images/rootfs/debian'
+    arch_map:
+      armhf: [{arch: arm}]
+      amd64: [{arch: x86_64}]
+
 
 file_systems:
 
@@ -47,9 +53,9 @@ file_systems:
     type: debian
     ramdisk: 'buster-igt/20190830.0/{arch}/rootfs.cpio.gz'
 
-  debian_stretch-v4l2_ramdisk:
-    type: debian
-    ramdisk: 'stretch-v4l2/20190830.0/{arch}/rootfs.cpio.gz'
+  debian_buster-v4l2_ramdisk:
+    type: debian_staging
+    ramdisk: 'buster-v4l2/20190904.0/{arch}/rootfs.cpio.gz'
 
 
 test_plan_default_filters:
@@ -180,13 +186,13 @@ test_plans:
     rootfs: debian_buster_ramdisk
 
   v4l2-compliance-uvc:
-    rootfs: debian_stretch-v4l2_ramdisk
+    rootfs: debian_buster-v4l2_ramdisk
     # FIXME - this is not very sustainable, improve template naming scheme
     pattern: 'v4l2-compliance/{category}-{method}-{protocol}-{rootfs}-v4l2-compliance-template.jinja2'
     params: {v4l2_driver: "uvcvideo"}
 
   v4l2-compliance-vivid:
-    rootfs: debian_stretch-v4l2_ramdisk
+    rootfs: debian_buster-v4l2_ramdisk
     pattern: 'v4l2-compliance/generic-qemu-v4l2-compliance-template.jinja2'
     params: {v4l2_driver: "vivid"}
     filters:
