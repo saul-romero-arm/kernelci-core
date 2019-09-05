@@ -15,6 +15,35 @@
             - lava-test-shell
         run:
           steps:
+            - dmesg --level=warn --notime -x -k > dmesg.warn
+            - >
+                for level in err crit alert emerg; do
+                  dmesg --level=$level --notime -x -k > dmesg.$level
+                  test -s dmesg.$level && res=fail || res=pass
+                  lava-test-case $level --result $res
+                done
+            - cat dmesg.emerg dmesg.alert dmesg.crit dmesg.err dmesg.warn
+      from: inline
+      name: dmesg
+      path: inline/dmesg.yaml
+
+- test:
+    timeout:
+      minutes: 10
+    definitions:
+    - repository:
+        metadata:
+          format: Lava-Test Test Definition 1.0
+          name: baseline
+          description: "baseline test plan"
+          os:
+            - debian
+          scope:
+            - functional
+          environment:
+            - lava-test-shell
+        run:
+          steps:
             - export PATH=/opt/bootrr/helpers:$PATH
             - cd /opt/bootrr && sh helpers/bootrr-auto
       lava-signal: kmsg
