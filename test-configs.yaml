@@ -41,15 +41,15 @@ file_systems:
 
   debian_buster_ramdisk:
     type: debian
-    ramdisk: 'buster/20190830.0/{arch}/rootfs.cpio.gz'
+    ramdisk: 'buster/20190906.0/{arch}/rootfs.cpio.gz'
 
   debian_buster-igt_ramdisk:
     type: debian
-    ramdisk: 'buster-igt/20190830.0/{arch}/rootfs.cpio.gz'
+    ramdisk: 'buster-igt/20190906.0/{arch}/rootfs.cpio.gz'
 
-  debian_stretch-v4l2_ramdisk:
+  debian_buster-v4l2_ramdisk:
     type: debian
-    ramdisk: 'stretch-v4l2/20190830.0/{arch}/rootfs.cpio.gz'
+    ramdisk: 'buster-v4l2/20190906.0/{arch}/rootfs.cpio.gz'
 
 
 test_plan_default_filters:
@@ -91,8 +91,7 @@ test_plans:
     params:
       job_timeout: '50'
 
-  boot_nfs:
-    name: 'boot-nfs'
+  boot-nfs:
     rootfs: buildroot_nfs
     pattern: 'boot-nfs/{category}-{method}-{protocol}-nfs-template.jinja2'
     filters:
@@ -115,7 +114,7 @@ test_plans:
       - blacklist: *clang_environment_filter
 
   boot_qemu:
-    name: boot
+    base_name: boot
     rootfs: buildroot_ramdisk
     pattern: 'boot/generic-qemu-boot-template.jinja2'
     filters:
@@ -124,7 +123,7 @@ test_plans:
   cros-ec:
     rootfs: debian_buster_ramdisk
 
-  igt_drm_kms:
+  igt-drm-kms:
     rootfs: debian_buster-igt_ramdisk
     pattern: 'igt/{category}-{method}-{protocol}-{rootfs}-igt.jinja2'
     params:
@@ -150,7 +149,7 @@ test_plans:
     rootfs: debian_buster_ramdisk
 
   simple_qemu:
-    name: simple
+    base_name: simple
     rootfs: debian_buster_ramdisk
     pattern: 'simple/generic-qemu-simple-template.jinja2'
 
@@ -190,16 +189,14 @@ test_plans:
   usb:
     rootfs: debian_buster_ramdisk
 
-  v4l2_compliance_uvc:
-    name: v4l2-compliance-uvc
-    rootfs: debian_stretch-v4l2_ramdisk
+  v4l2-compliance-uvc:
+    rootfs: debian_buster-v4l2_ramdisk
     # FIXME - this is not very sustainable, improve template naming scheme
     pattern: 'v4l2-compliance/{category}-{method}-{protocol}-{rootfs}-v4l2-compliance-template.jinja2'
     params: {v4l2_driver: "uvcvideo"}
 
-  v4l2_compliance_qemu_vivid:
-    name: v4l2-compliance-vivid
-    rootfs: debian_stretch-v4l2_ramdisk
+  v4l2-compliance-vivid:
+    rootfs: debian_buster-v4l2_ramdisk
     pattern: 'v4l2-compliance/generic-qemu-v4l2-compliance-template.jinja2'
     params: {v4l2_driver: "vivid"}
     filters:
@@ -781,7 +778,7 @@ device_types:
       guestfs_interface: 'virtio'
       machine: 'virt,gic-version=2'
     filters:
-      - whitelist: {defconfig: ['multi_v7_defconfig', 'vexpress_defconfig']}
+      - whitelist: {defconfig: ['multi_v7_defconfig']}
 
   qemu_arm-virt-gicv3:
     base_name: qemu
@@ -794,7 +791,7 @@ device_types:
       guestfs_interface: 'virtio'
       machine: 'virt,gic-version=3'
     filters:
-      - whitelist: {defconfig: ['multi_v7_defconfig', 'vexpress_defconfig']}
+      - whitelist: {defconfig: ['multi_v7_defconfig']}
 
   qemu_arm64-virt-gicv2:
     base_name: qemu
@@ -1091,7 +1088,7 @@ test_configs:
   - device_type: am57xx-beagle-x15
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - simple
       - sleep
 
@@ -1103,7 +1100,7 @@ test_configs:
   - device_type: ar9331-dpt-module
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
@@ -1141,7 +1138,7 @@ test_configs:
     test_plans: [boot]
 
   - device_type: armada-xp-gp
-    test_plans: [boot_nfs]
+    test_plans: [boot-nfs]
 
   - device_type: armada-xp-linksys-mamba
     test_plans: [boot]
@@ -1180,7 +1177,7 @@ test_configs:
   - device_type: beaglebone-black
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - simple
 
@@ -1188,7 +1185,7 @@ test_configs:
     test_plans: [boot, kselftest]
 
   - device_type: cubietruck
-    test_plans: [boot, boot_nfs]
+    test_plans: [boot, boot-nfs]
 
   - device_type: d03
     test_plans: [boot]
@@ -1196,28 +1193,28 @@ test_configs:
   - device_type: da850-lcdk
     test_plans: [boot]
 
+  - device_type: dove-cubox
+    test_plans:
+      - boot
+      - boot-nfs
+      - kselftest
+      - sleep
+
   - device_type: dra7-evm
     test_plans:
       - boot
       - kselftest
       - simple
 
-  - device_type: dove-cubox
-    test_plans:
-      - boot
-      - boot_nfs
-      - kselftest
-      - sleep
-
   - device_type: hi6220-hikey
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - simple
 
   - device_type: hip07-d05
-    test_plans: [boot, boot_nfs]
+    test_plans: [boot, boot-nfs]
 
   - device_type: hsdk
     test_plans: [boot]
@@ -1225,35 +1222,35 @@ test_configs:
   - device_type: imx23-olinuxino
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
   - device_type: imx27-phytec-phycard-s-rdk
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
   - device_type: imx28-duckbill
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
   - device_type: imx53-qsrb
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
   - device_type: imx6dl-riotboard
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
@@ -1263,26 +1260,26 @@ test_configs:
   - device_type: imx6ul-pico-hobbit
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
   - device_type: imx6q-sabrelite
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
       - usb
 
   - device_type: jetson-tk1
-    test_plans: [boot, boot_nfs, kselftest]
+    test_plans: [boot, boot-nfs, kselftest]
 
   - device_type: kirkwood-db-88f6282
-    test_plans: [boot_nfs]
+    test_plans: [boot-nfs]
 
   - device_type: kirkwood-openblocks_a7
-    test_plans: [boot, boot_nfs]
+    test_plans: [boot, boot-nfs]
 
   - device_type: meson8b-odroidc1
     test_plans: [boot, kselftest]
@@ -1344,9 +1341,9 @@ test_configs:
   - device_type: meson-gxm-khadas-vim2
     test_plans:
       - boot
+      - boot-nfs
       - kselftest
       - simple
-      - boot_nfs
 
   - device_type: minnowboard-turbot-E3826
     test_plans:
@@ -1356,26 +1353,26 @@ test_configs:
   - device_type: mustang
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
 
   - device_type: odroid-x2
-    test_plans: [boot, boot_nfs, kselftest]
+    test_plans: [boot, boot-nfs, kselftest]
 
   - device_type: odroid-xu3
     test_plans:
       - boot
-      - boot_nfs
-      - igt_drm_kms
+      - boot-nfs
+      - igt-drm-kms
       - kselftest
       - sleep
       - usb
 
   - device_type: orion5x-rd88f5182-nas
-    test_plans: [boot_nfs]
+    test_plans: [boot-nfs]
 
   - device_type: ox820-cloudengines-pogoplug-series-3
-    test_plans: [boot, boot_nfs]
+    test_plans: [boot, boot-nfs]
 
   - device_type: panda
     test_plans: [boot, kselftest]
@@ -1404,7 +1401,7 @@ test_configs:
       - boot_qemu
       - simple_qemu
       - uefi_arm
-      - v4l2_compliance_qemu_vivid
+      - v4l2-compliance-vivid
 
   - device_type: qemu_arm64-virt-gicv2
     test_plans:
@@ -1416,7 +1413,7 @@ test_configs:
       - boot_qemu
       - simple_qemu
       - uefi_arm64
-      - v4l2_compliance_qemu_vivid
+      - v4l2-compliance-vivid
 
   - device_type: qemu_i386
     test_plans:
@@ -1430,7 +1427,7 @@ test_configs:
       - simple_qemu
       - uefi_x86_64
       - uefi_x86-mixed
-      - v4l2_compliance_qemu_vivid
+      - v4l2-compliance-vivid
 
   - device_type: r8a7791-porter
     test_plans: [boot]
@@ -1438,7 +1435,7 @@ test_configs:
   - device_type: r8a7795-salvator-x
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - simple
 
@@ -1453,10 +1450,10 @@ test_configs:
       - baseline
       - boot
       - cros-ec
-      - v4l2_compliance_uvc
+      - v4l2-compliance-uvc
 
   - device_type: rk3399-gru-kevin
-    test_plans: [igt_drm_kms]
+    test_plans: [igt-drm-kms]
     filters:
       - blacklist: {kernel: ['v3.', 'v4.4', 'v4.9', 'v4.14']}
 
@@ -1466,7 +1463,7 @@ test_configs:
   - device_type: rk3288-rock2-square
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
       - usb
@@ -1478,24 +1475,24 @@ test_configs:
     test_plans:
       - baseline
       - boot
-      - boot_nfs
+      - boot-nfs
       - cros-ec
-      - igt_drm_kms
+      - igt-drm-kms
       - sleep
       - usb
-      - v4l2_compliance_uvc
+      - v4l2-compliance-uvc
 
   - device_type: socfpga-cyclone5-socrates
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - sleep
 
   - device_type: snow
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
 
   - device_type: sun50i-a64-bananapi-m64
@@ -1562,31 +1559,31 @@ test_configs:
     test_plans:
       - boot
       - cros-ec
-      - igt_drm_kms
+      - igt-drm-kms
       - sleep
       - usb
 
   - device_type: x86-atom330
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - kselftest
       - simple
 
   - device_type: x86-celeron
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - simple
 
   - device_type: x86-pentium4
     test_plans:
       - boot
-      - boot_nfs
+      - boot-nfs
       - simple
 
   - device_type: x86-x5-z8350
-    test_plans: [boot, boot_nfs]
+    test_plans: [boot, boot-nfs]
 
   - device_type: zynq-zc702
     test_plans: [boot]

@@ -28,7 +28,6 @@ import time
 import urlparse
 
 from kernelci import shell_cmd
-import kernelci.configs
 import kernelci.elf
 
 # This is used to get the mainline tags as a minimum for git describe
@@ -229,7 +228,7 @@ def git_describe(tree_name, path):
     The returned value is a string with the "git describe" for the commit
     currently checked out in the local git repository.
     """
-    describe_args = "--match=v\*" if tree_name == "soc" else ""
+    describe_args = r"--match=v\*" if tree_name == "soc" else ""
     cmd = """\
 cd {path} && \
 git describe {describe_args} \
@@ -247,7 +246,7 @@ def git_describe_verbose(path):
     the commit currently checked out in the local git repository.  This is
     typically based on a mainline kernel version tag.
     """
-    cmd = """\
+    cmd = r"""\
 cd {path} &&
 git describe --match=v[1-9]\* \
 """.format(path=path)
@@ -261,7 +260,7 @@ def add_kselftest_fragment(path, frag_path='kernel/configs/kselftest.config'):
     *path* is the path to the local kernel git repository
     *frag_path* is the path where to create the fragment within the repo
     """
-    shell_cmd("""
+    shell_cmd(r"""
 cd {path} &&
 find \
   tools/testing/selftests \
@@ -398,6 +397,15 @@ def list_kernel_configs(config, kdir, single_variant=None, single_arch=None):
     return kernel_configs
 
 
+def _output_to_file(cmd, log_file, rel_dir=None):
+    open(log_file, 'a').write("#\n# {}\n#\n".format(cmd))
+    if rel_dir:
+        log_file = os.path.relpath(log_file, rel_dir)
+    cmd = "/bin/bash -c '(set -o pipefail; {} 2>&1 | tee -a {})'".format(
+        cmd, log_file)
+    return cmd
+
+
 def _run_make(kdir, arch, target=None, jopt=None, silent=True, cc='gcc',
               cross_compile=None, use_ccache=None, output=None, log_file=None,
               opts=None):
@@ -438,13 +446,11 @@ def _run_make(kdir, arch, target=None, jopt=None, silent=True, cc='gcc',
     cmd = ' '.join(args)
     print(cmd)
     if log_file:
-        open(log_file, 'a').write("#\n# {}\n#\n".format(cmd))
-        cmd = "/bin/bash -c '(set -o pipefail; {} 2>&1 | tee -a {})'".format(
-            cmd, log_file)
+        cmd = _output_to_file(cmd, log_file)
     return shell_cmd(cmd, True)
 
 
-def _make_defconfig(defconfig, kwargs, fragments):
+def _make_defconfig(defconfig, kwargs, fragments, verbose, log_file):
     kdir, output_path = (kwargs.get(k) for k in ('kdir', 'output'))
     result = True
 
@@ -481,12 +487,15 @@ export ARCH={arch}
 export HOSTCC={cc}
 export CC={cc}
 export CROSS_COMPILE={cross}
-scripts/kconfig/merge_config.sh -O {output} '{base}' '{frag}' > /dev/null 2>&1
+scripts/kconfig/merge_config.sh -O {output} '{base}' '{frag}' {redir} \
 """.format(kdir=kdir, arch=kwargs['arch'], cc=kwargs['cc'],
            cross=kwargs['cross_compile'], output=rel_path,
            base=os.path.join(rel_path, '.config'),
-           frag=os.path.join(rel_path, kconfig_frag_name))
+           frag=os.path.join(rel_path, kconfig_frag_name),
+           redir='> /dev/null' if not verbose else '')
         print(cmd.strip())
+        if log_file:
+            cmd = _output_to_file(cmd, log_file, kdir)
         result = shell_cmd(cmd, True)
 
     tmpfile.close()
@@ -548,7 +557,8 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
     start_time = time.time()
     fragments = []
     if defconfig:
-        result = _make_defconfig(defconfig, kwargs, fragments)
+        result = _make_defconfig(
+            defconfig, kwargs, fragments, verbose, log_file)
     elif os.path.exists(dot_config):
         print("Re-using {}".format(dot_config))
         result = True
