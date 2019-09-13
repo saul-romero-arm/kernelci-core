@@ -450,15 +450,20 @@ def _run_make(kdir, arch, target=None, jopt=None, silent=True, cc='gcc',
     return shell_cmd(cmd, True)
 
 
-def _make_defconfig(defconfig, kwargs, fragments, verbose, log_file):
+def _make_defconfig(defconfig, kwargs, fragments, verbose, log_file, opts):
     kdir, output_path = (kwargs.get(k) for k in ('kdir', 'output'))
     result = True
 
+    defconfig_kwargs = dict(kwargs)
+    defconfig_opts = dict(defconfig_kwargs['opts'])
+    defconfig_kwargs['opts'] = defconfig_opts
     tmpfile_fd, tmpfile_path = tempfile.mkstemp(prefix='kconfig-')
     tmpfile = os.fdopen(tmpfile_fd, 'w')
     defs = defconfig.split('+')
     target = defs.pop(0)
     for d in defs:
+        if d.startswith('KCONFIG_ALLCONFIG'):
+            defconfig_opts['KCONFIG_ALLCONFIG'] = d.split('=')[1]
         if d.startswith('CONFIG_'):
             tmpfile.write(d + '\n')
             fragments.append(d)
@@ -471,7 +476,7 @@ def _make_defconfig(defconfig, kwargs, fragments, verbose, log_file):
                 fragments.append(os.path.basename(os.path.splitext(d)[0]))
     tmpfile.flush()
 
-    if not _run_make(target=target, **kwargs):
+    if not _run_make(target=target, **defconfig_kwargs):
         result = False
 
     if result and fragments:
@@ -558,7 +563,7 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
     fragments = []
     if defconfig:
         result = _make_defconfig(
-            defconfig, kwargs, fragments, verbose, log_file)
+            defconfig, kwargs, fragments, verbose, log_file, opts)
     elif os.path.exists(dot_config):
         print("Re-using {}".format(dot_config))
         result = True
