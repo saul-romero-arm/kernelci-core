@@ -248,6 +248,9 @@ build_configs_defaults:
         extra_configs: ['allmodconfig', 'allnoconfig']
         fragments: [x86_kvm_guest]
 
+reference_defaults:
+  tree: mainline
+  branch: 'master'
 
 # Minimum architecture defconfigs
 arch_defconfigs: &arch_defconfigs
