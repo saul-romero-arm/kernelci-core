@@ -599,7 +599,7 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
     bmeta = {
         'build_threads': jopt,
         'build_time': round(build_time, 2),
-        'build_result': 'PASS' if result is True else 'FAIL',
+        'status': 'PASS' if result is True else 'FAIL',
         'arch': arch,
         'cross_compile': cross_compile,
         'compiler': cc,
