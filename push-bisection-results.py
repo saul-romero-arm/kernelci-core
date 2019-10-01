@@ -176,7 +176,7 @@ def send_result(args, log_file_name, token, api):
     data = {k: args[v] for k, v in data_map.iteritems()}
     kdir = args['kdir']
     data.update({
-        'type': 'boot' if not args['plan'] and not args['case'] else 'test',
+        'type': 'boot' if args['plan'] == 'boot' else 'test',
         'log': log_file_name,
         'good_summary': git_summary(kdir, args['good']),
         'bad_summary': git_summary(kdir, args['bad']),
@@ -217,7 +217,7 @@ def send_report(args, log_file_name, token, api):
     cc = cc.difference(to)
     data.update({
         'report_type': 'bisect',
-        'type': 'boot' if not args['plan'] and not args['case'] else 'test',
+        'type': 'boot' if args['plan'] == 'boot' else 'test',
         'log': log_file_name,
         'format': ['txt'],
         'send_to': list(to),
