@@ -390,16 +390,34 @@ def findMergeBase(kdir, good, bad) {
             script: "git merge-base --is-ancestor ${base} HEAD")
 
         if (good_base != 0) {
-            def ref = "${params.REF_KERNEL_TREE}/${params.REF_KERNEL_BRANCH}"
+            def ref_url = params.REF_KERNEL_URL
+            def ref_tree = params.REF_KERNEL_TREE
+            def ref_branch = params.REF_KERNEL_BRANCH
+
+            if (!(ref_url && ref_tree && ref_branch)) {
+                dir(kci_core) {
+                    ref = sh(script: """\
+                                    ./kci_build get_reference --tree-name ${params.KERNEL_TREE} \
+                                    --branch ${params.KERNEL_BRANCH}""", returnStdout: true).trim().tokenize("\n")
+
+                    if (ref.size() > 0) {
+                        ref_url = ref[0]
+                        ref_tree = ref[1]
+                        ref_branch = ref[2]
+                    }
+                }
+            }
+
+            def ref = "${ref_tree}/${ref_branch}"
             print("Good commit not in current branch, finding base in ${ref}")
 
             print("""\
 Reference:
-    Tree:      ${params.REF_KERNEL_TREE}
-    URL:       ${params.REF_KERNEL_URL}
-    Branch:    ${params.REF_KERNEL_BRANCH}""")
+    Tree:      ${ref_tree}
+    URL:       ${ref_url}
+    Branch:    ${ref_branch}""")
 
-            setRemote(kdir, params.REF_KERNEL_TREE, params.REF_KERNEL_URL)
+            setRemote(kdir, ref_tree, ref_url)
             base = sh(script: "git merge-base ${bad} ${ref}",
                       returnStdout: true).trim()
             print("Merge base: ${base}")
