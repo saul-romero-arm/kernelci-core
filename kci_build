@@ -356,6 +356,15 @@ class cmd_get_build_env(Command):
         _show_build_env(variant.build_environment, args.arch)
         return True
 
+class cmd_get_reference(Command):
+    help = "Print reference tree and branch for bisections"
+    args = [Args.config]
+
+    def __call__(self, configs, args):
+        conf = configs['build_configs'][args.config]
+        print(conf.reference.tree.url)
+        print(conf.reference.tree.name)
+        print(conf.reference.branch)
 
 class cmd_show_build_env(Command):
     help = "Show parameters of a given build environment"
