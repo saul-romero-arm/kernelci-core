@@ -384,7 +384,7 @@ def runTest(kci_core, describe, expected=0, runs=0) {
  * bisection
  */
 
-def findMergeBase(kdir, good, bad) {
+def findMergeBase(kdir, good, bad, ref_url, ref_tree, ref_branch) {
     def base = good
 
     dir(kdir) {
@@ -393,16 +393,16 @@ def findMergeBase(kdir, good, bad) {
             script: "git merge-base --is-ancestor ${base} HEAD")
 
         if (good_base != 0) {
-            def ref = "${params.REF_KERNEL_TREE}/${params.REF_KERNEL_BRANCH}"
+            def ref = "${ref_tree}/${ref_branch}"
             print("Good commit not in current branch, finding base in ${ref}")
 
             print("""\
 Reference:
-    Tree:      ${params.REF_KERNEL_TREE}
-    URL:       ${params.REF_KERNEL_URL}
-    Branch:    ${params.REF_KERNEL_BRANCH}""")
+    Tree:      ${ref_tree}
+    URL:       ${ref_url}
+    Branch:    ${ref_branch}""")
 
-            setRemote(kdir, params.REF_KERNEL_TREE, params.REF_KERNEL_URL)
+            setRemote(kdir, ref_tree, ref_url)
             base = sh(script: "git merge-base ${bad} ${ref}",
                       returnStdout: true).trim()
             print("Merge base: ${base}")
@@ -540,6 +540,10 @@ def bisection(kci_core, kdir, checks) {
     def good = null
     def bad = null
 
+    def ref_kernel_url = params.REF_KERNEL_URL
+    def ref_kernel_tree = params.REF_KERNEL_TREE
+    def ref_kernel_branch = params.REF_KERNEL_BRANCH
+
     stage("Init") {
         timeout(time: 30, unit: 'MINUTES') {
             parallel(
@@ -548,8 +552,30 @@ def bisection(kci_core, kdir, checks) {
             )
         }
 
+
+        dir(kci_core) {
+            if (!(ref_kernel_url && ref_kernel_tree && params.ref_kernel_branch)) {
+                print("MG 01")
+
+                ref = sh(script: """\
+                                ./kci_build get_reference --tree-name ${params.KERNEL_TREE} \
+                                --branch ${params.KERNEL_BRANCH}""", returnStdout: true).trim().tokenize("\n")
+
+                if (ref.size() > 0) {
+                    ref_kernel_url = ref[0]
+                    ref_kernel_tree = ref[1]
+                    ref_kernel_branch = ref[2]
+                }
+            }
+        }
+        print("MG03")
+        echo """\
+            Ref Tree:  ${ref_kernel_tree}
+            Ref URL:   ${ref_kernel_url}
+            Ref Branch:${ref_kernel_branch}"""
+
         bad = params.BAD_COMMIT
-        good = findMergeBase(kdir, params.GOOD_COMMIT, bad)
+        good = findMergeBase(kdir, params.GOOD_COMMIT, bad, ref_kernel_url, ref_kernel_tree, ref_kernel_branch)
     }
 
     stage("Check pass") {
