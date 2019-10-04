@@ -115,6 +115,9 @@ trees:
   tegra:
     url: "https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git"
 
+  thermal:
+    url: "https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git"
+
   ulfh:
     url: "https://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git"
 
@@ -281,6 +284,12 @@ arch_defconfigs: &arch_defconfigs
     base_defconfig: 'x86_64_defconfig'
     filters:
       - regex: { defconfig: 'x86_64_defconfig' }
+
+
+minimal_variants: &minimal_variants
+  gcc-8:
+    build_environment: gcc-8
+    architectures: *arch_defconfigs
 
 
 # Build fewer kernel configs with stable branches
@@ -509,26 +518,17 @@ build_configs:
   linusw_devel:
     tree: linusw
     branch: 'devel'
-    variants:
-      gcc-8:
-        build_environment: gcc-8
-        architectures: *arch_defconfigs
+    variants: *minimal_variants
 
   linusw_fixes:
     tree: linusw
     branch: 'fixes'
-    variants:
-      gcc-8:
-        build_environment: gcc-8
-        architectures: *arch_defconfigs
+    variants: *minimal_variants
 
   linusw_for-next:
     tree: linusw
     branch: 'for-next'
-    variants:
-      gcc-8:
-        build_environment: gcc-8
-        architectures: *arch_defconfigs
+    variants: *minimal_variants
 
   lsk_for-test:
     tree: lsk
@@ -819,6 +819,11 @@ build_configs:
     tree: tegra
     branch: 'for-next'
 
+  thermal:
+    tree: thermal
+    branch: 'testing'
+    variants: *minimal_variants
+
   ulfh:
     tree: ulfh
     branch: 'next'
@@ -826,7 +831,4 @@ build_configs:
   vireshk:
     tree: vireshk
     branch: 'for-kernelci'
-    variants:
-      gcc-8:
-        build_environment: gcc-8
-        architectures: *arch_defconfigs
+    variants: *minimal_variants
