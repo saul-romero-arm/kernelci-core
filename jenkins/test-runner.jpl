@@ -201,15 +201,16 @@ node("docker && test-runner") {
             def i = 0
 
             for (lab in labs_submit) {
+                def lab_name = "${lab}"
                 def lab_dir = "${jobs_dir}/${lab}"
                 def step_name = "${i} ${lab}"
 
                 print(step_name)
+
                 steps[step_name] = {
-                    def local_lab = lab
-                    def local_lab_dir = lab_dir
-                    submitJobs(kci_core, local_lab, local_lab_dir)
+                    submitJobs(kci_core, lab_name, lab_dir)
                 }
+
                 i += 1
             }
 
