@@ -158,8 +158,11 @@ class cmd_submit(Command):
                 continue
             with open(path, 'rb') as job_file:
                 job = job_file.read()
-                job_id = lab_api.submit(job)
-                print("{} {}".format(job_id, path))
+                try:
+                    job_id = lab_api.submit(job)
+                    print("{} {}".format(job_id, path))
+                except Exception as e:
+                    print("ERROR {}: {}".format(path, e))
         return True
 
 
