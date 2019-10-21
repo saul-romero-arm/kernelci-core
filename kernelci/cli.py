@@ -195,6 +195,19 @@ class Args(object):
         'help': "Test plan name",
     }
 
+    url = {
+        'name': '--url',
+        'help': "Kernel sources download URL",
+    }
+
+    filename = {
+        'name': '--filename',
+        'help': "kernel sources destination filename",
+        'required': False,
+        'default': 'linux-src.tar.gz',
+
+    }
+
 
 class Command(object):
     help = None

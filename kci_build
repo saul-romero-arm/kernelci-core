@@ -17,7 +17,12 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
+import os
+import shutil
 import sys
+import tarfile
+
+import requests
 
 from kernelci.cli import Args, Command, parse_args
 import kernelci.build
@@ -301,6 +306,43 @@ Invalid arguments, please provide at least one of these sets of options:
         return kernelci.build.publish_kernel(
             args.kdir, api=args.api, token=args.token,
             json_path=args.json_path)
+
+
+class cmd_download_source(Command):
+    help = "Downloads and optionally untars kernel sources"
+    args = [Args.kdir, Args.url]
+    opt_args = [Args.filename]
+
+    def _cleanup_dir(self, dir):
+        try:
+            shutil.rmtree(dir)
+        except OSError as e:
+            # Don't panic if there is no directory to rem
+            if e.errno != 2:
+                raise
+        os.makedirs(dir)
+
+    def _save_response(self, resp, filename, chunk_size=1024):
+        with open(filename, 'wb') as out_file:
+            for chunk in resp.iter_content(chunk_size):
+                out_file.write(chunk)
+
+    def _download(self, url, filename):
+        resp = requests.get(url, stream=True)
+        if resp.status_code == 200:
+            self._save_response(resp, filename)
+        else:
+            raise requests.exceptions.HTTPError
+
+    def _untar(self, filename, path):
+        with tarfile.open(filename, 'r:*') as tar:
+            tar.extractall(path)
+
+    def __call__(self, configs, args):
+        self._cleanup_dir(args.kdir)
+        self._download(args.url, args.filename)
+        self._untar(args.filename, args.kdir)
+        return True
 
 
 if __name__ == '__main__':
