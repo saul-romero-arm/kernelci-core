@@ -23,6 +23,7 @@ import requests
 import shutil
 import stat
 import subprocess
+import tarfile
 import tempfile
 import time
 import urlparse
@@ -286,6 +287,20 @@ def make_tarball(kdir, tarball_name):
     subprocess.check_output(cmd, shell=True)
 
 
+def extract_tarball(dest_path, tarball_name):
+    """Extract kernel source tarball
+
+    All files from the tarball are extracted to the dest_path.
+    The tarball can be compressed with gzip or bzip2.
+
+    *dest_path* is the path to a local directory
+    *tarball_name* is a name or a full path to the tarball to be extracted
+    :return:
+    """
+    with tarfile.open(tarball_name, 'r:*') as tarball:
+        tarball.extractall(dest_path)
+
+
 def generate_config_fragment(frag, kdir):
     """Generate a config fragment file for a given fragment config
 
@@ -339,6 +354,20 @@ def push_tarball(config, kdir, storage, api, token):
     _upload_files(api, token, path, {tarball_name: open(tarball)})
     os.unlink(tarball)
     return tarball_url
+
+
+def pull_tarball(kdir, url, dest_filename, retries, retry_sleep):
+    recreate_dir(kdir)
+    while retries > 0:
+        if download_file(url, dest_filename):
+            break
+        else:
+            retries -= 1
+            time.sleep(retry_sleep)
+    else:
+        return False
+    extract_tarball(kdir, dest_filename)
+    return True
 
 
 def _add_frag_configs(kdir, frag_list, frag_paths, frag_configs):
@@ -858,3 +887,28 @@ def publish_kernel(kdir, install='_install_', api=None, token=None,
         resp.raise_for_status()
 
     return True
+
+
+def recreate_dir(path):
+    """ Deletes and recreates a directory
+
+    Deletes given directory and all its subdirectiries if extist and creates
+    an empty directory at a given path. If the intermediate-level
+    directories don't exist they will be created.
+
+    *path* is a directory name or a path
+    """
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    os.makedirs(path)
+
+
+def download_file(url, dest_filename, chunk_size=1024):
+    resp = requests.get(url, stream=True)
+    if resp.status_code == 200:
+        with open(dest_filename, 'wb') as out_file:
+            for chunk in resp.iter_content(chunk_size):
+                out_file.write(chunk)
+        return True
+    else:
+        return False

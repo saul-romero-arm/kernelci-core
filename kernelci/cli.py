@@ -195,6 +195,34 @@ class Args(object):
         'help': "Test plan name",
     }
 
+    url = {
+        'name': '--url',
+        'help': "Kernel sources download URL",
+    }
+
+    filename = {
+        'name': '--filename',
+        'help': "Kernel sources destination filename",
+        'required': False,
+        'default': 'linux-src.tar.gz',
+    }
+
+    retries = {
+        'name': '--retries',
+        'help': 'Number of retries before download fails',
+        'required': False,
+        'default': 1,
+        'type': int,
+    }
+
+    retry_sleep = {
+        'name': '--retry-sleep',
+        'help': 'Number of seconds between retries',
+        'required': False,
+        'default': 5,
+        'type': float,
+    }
+
 
 class Command(object):
     help = None
