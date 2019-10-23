@@ -77,14 +77,14 @@ test_plans:
   baseline:
     rootfs: buildroot_baseline_ramdisk
     filters:
-      - blacklist: *kselftest_defconfig_clang_environment_filter
+      - blacklist: *kselftest_defconfig_filter
 
   baseline_qemu:
     base_name: baseline
     rootfs: buildroot_baseline_ramdisk
     pattern: 'baseline/generic-qemu-baseline-template.jinja2'
     filters:
-      - blacklist: *kselftest_defconfig_clang_environment_filter
+      - blacklist: *kselftest_defconfig_filter
 
   baseline-fastboot:
     rootfs: buildroot_baseline_ramdisk
@@ -130,7 +130,7 @@ test_plans:
   boot:
     rootfs: buildroot_ramdisk
     filters:
-      - blacklist: *kselftest_defconfig_clang_environment_filter
+      - blacklist: *kselftest_defconfig_filter
 
   boot-nfs:
     rootfs: buildroot_nfs
