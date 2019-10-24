@@ -33,15 +33,13 @@ labs:
     lab_type: lava
     url: 'https://lava.collabora.co.uk/RPC2/'
     filters:
+      - blacklist: {tree: [android]}
       - whitelist:
           plan:
             - baseline
             - boot
-            - boot-nfs
             - cros-ec
             - igt-drm-kms
-            - kselftest
-            - simple
             - sleep
             - usb
             - v4l2-compliance-uvc
