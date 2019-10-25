@@ -555,6 +555,7 @@ build_configs:
             fragments: [kselftest]
             extra_configs:
               - 'defconfig+CONFIG_CPU_BIG_ENDIAN=y'
+              - 'allmodconfig+KCONFIG_ALLCONFIG=arch/arm64/configs/defconfig'
           i386:
             base_defconfig: 'i386_defconfig'
             filters:
