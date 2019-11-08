@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2018 Collabora Limited
+# Copyright (C) 2018, 2019 Collabora Limited
 # Author: Guillaume Tucker <guillaume.tucker@collabora.com>
 #
 # This module is free software; you can redistribute it and/or modify it under
@@ -49,6 +49,12 @@ BOOT_STATUS_MAP = {
     INCOMPLETE: BISECT_FAIL,
 }
 
+TEST_CASE_STATUS_MAP = {
+    'pass': BISECT_PASS,
+    'skip': BISECT_SKIP,
+    'fail': BISECT_FAIL,
+}
+
 
 def is_infra_error(cb):
     lava_yaml = cb['results']['lava']
@@ -64,6 +70,39 @@ def handle_boot(cb):
     return BOOT_STATUS_MAP.get(job_status, BISECT_SKIP)
 
 
+def handle_test(cb, full_case_name):
+    name_split = full_case_name.split('.')
+    test_name = name_split.pop()
+    test_suite = name_split.pop()
+    # ToDo: handle test sets
+    if name_split:
+        raise Exception("Test sets not supported yet...")
+        test_set = test_suite
+        test_suite = name_split.pop()
+    else:
+        test_set = None
+
+    print("suite: {}, set: {}, test: {}".format(
+        test_suite, test_set, test_name))
+
+    results = cb['results']
+    for name, test_results_yaml in results.items():
+        if name == 'lava':
+            # ToDo: handle login test case (reuse backend code...)
+            continue
+        name = name.partition("_")[2]
+        if name == test_suite:
+            test_results = yaml.load(test_results_yaml)
+            for test_case in test_results:
+                if test_case['name'] == test_name:
+                    test_case_result = test_case['result']
+                    print("Test case result: {}".format(test_case_result))
+                    return TEST_CASE_STATUS_MAP[test_case_result]
+
+    print("Warning: failed to find test case result")
+    return BISECT_SKIP
+
+
 def main(args):
     with open(args.json) as json_file:
         cb = json.load(json_file)
@@ -75,6 +114,8 @@ def main(args):
     if is_infra_error(cb):
         print("Infrastructure error")
         ret = BISECT_SKIP
+    elif args.case:
+        ret = handle_test(cb, args.case)
     else:
         ret = handle_boot(cb)
 
@@ -87,5 +128,7 @@ if __name__ == '__main__':
                         help="Path to the JSON data file")
     parser.add_argument("--token",
                         help="Secret authorization token")
+    parser.add_argument("--case",
+                        help="Test case name in dotted syntax")
     args = parser.parse_args()
     main(args)
