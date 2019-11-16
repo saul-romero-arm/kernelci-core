@@ -14,7 +14,6 @@ def r = new RootFS()
 def config = [
     'name':"buster-xfstests",
     'arch_list': [
-        "i386",
         "amd64",
     ],
     'debian_release':"buster",
