@@ -27,7 +27,6 @@ try:
 except ImportError:
     from StringIO import StringIO
 import urlparse
-from lib import configuration
 
 RE_ADDR = r'.*@.*\.[a-z]+'
 RE_TRAILER = re.compile(r'^(?P<tag>[A-Z][a-z-]*)\: (?P<value>.*)$')
@@ -227,22 +226,13 @@ def send_report(args, log_file_name, token, api):
 
 
 def main(args):
-    config = configuration.get_config(args)
-    token = config.get('token')
-    api = config.get('api')
-
-    if not token:
-        raise Exception("No KernelCI API token provided")
-    if not api:
-        raise Exception("No KernelCI API URL provided")
-
     upload_path = '/'.join(args[k] for k in [
         'tree', 'branch', 'kernel', 'arch', 'defconfig',
         'build_environment', 'lab'])
     log_file_name = 'bisect-{}.json'.format(args['target'])
 
     print("Uploading bisect log: {}".format(upload_path))
-    upload_log(args, upload_path, log_file_name, token, api)
+    upload_log(args, upload_path, log_file_name, args.token, args.api)
 
     print("Sending bisection results")
     send_result(args, log_file_name, token, api)
@@ -254,11 +244,9 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         "Push automated bisection results to the KernelCI backend API")
-    parser.add_argument("--config",
-                        help="path to KernelCI configuration file")
     parser.add_argument("--token",
-                        help="KernelCI API Token")
-    parser.add_argument("--api",
+                        help="KernelCI API Token", required=True)
+    parser.add_argument("--api", required=True,
                         help="KernelCI API URL")
     parser.add_argument("--lab", required=True,
                         help="KernelCI lab name")
