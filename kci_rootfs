@@ -46,9 +46,18 @@ class cmd_validate(Command):
             print('\tdocker_image: {}'.format(config.docker_image))
 
 
+class cmd_list_configs(Command):
+    help = "Lists all rootfs config names"
+
+    def __call__(self, config_data, *args, **kwargs):
+        rootfs_configs = config_data['rootfs_configs']
+        for config_name in rootfs_configs.keys():
+            print(config_name)
+
 # -----------------------------------------------------------------------------
 # Main
 #
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("kci_rootfs")
