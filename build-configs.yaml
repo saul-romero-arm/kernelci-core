@@ -242,6 +242,13 @@ build_configs_defaults:
             - 'defconfig+CONFIG_CPU_BIG_ENDIAN=y'
             - 'defconfig+CONFIG_RANDOMIZE_BASE=y'
 
+        arm64_boot: &arm64_arch
+          architectures:
+            arm64:
+              extra_configs:
+                - 'allmodconfig+KCONFIG_ALLCONFIG=arch/arm64/configs/defconfig'
+              filters: {kernel: ['next']}
+
         i386: &i386_arch
           base_defconfig: 'i386_defconfig'
           extra_configs: ['allnoconfig']
