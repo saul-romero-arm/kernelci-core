@@ -536,7 +536,8 @@ build_configs:
           arm: &staging_arm
             base_defconfig: 'multi_v7_defconfig'
             filters:
-              - whitelist: {defconfig: ['multi_v7_defconfig']}
+              - whitelist:
+                  defconfig: ['multi_v7_defconfig', 'vexpress_defconfig']
           arm64:
             filters:
               - whitelist: {defconfig: ['defconfig']}
