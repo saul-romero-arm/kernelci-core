@@ -348,7 +348,7 @@ def push_tarball(config, kdir, storage, api, token):
     tarball = "{}.tar.gz".format(config.name)
     make_tarball(kdir, tarball)
     path = '/'.join([config.tree.name, config.branch, describe]),
-    _upload_files(api, token, path, {tarball_name: open(tarball)})
+    _upload_files(api, token, path, {tarball_name: open(tarball, "rb")})
     os.unlink(tarball)
     return tarball_url
 
@@ -844,7 +844,7 @@ def push_kernel(kdir, api, token, install='_install_'):
     for root, _, files in os.walk(install_path):
         for f in files:
             px = os.path.relpath(root, install_path)
-            artifacts[os.path.join(px, f)] = open(os.path.join(root, f))
+            artifacts[os.path.join(px, f)] = open(os.path.join(root, f), "rb")
     upload_path = bmeta['file_server_resource']
     print("Upload path: {}".format(upload_path))
     _upload_files(api, token, upload_path, artifacts)
