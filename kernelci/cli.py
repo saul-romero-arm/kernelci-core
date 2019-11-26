@@ -189,6 +189,11 @@ class Args(object):
         'help': "Path the output directory",
     }
 
+    install = {
+        'name': '--install',
+        'help': "Path to the install directory",
+    }
+
     json_path = {
         'name': '--json-path',
         'help': "Path to the JSON file",
