@@ -48,7 +48,7 @@ def git_bisect_log(repo):
     p = subprocess.Popen("cd {}; git bisect log".format(repo),
                          shell=True, stdout=subprocess.PIPE)
     stdout, _ = p.communicate()
-    return list(l.strip() for l in StringIO(stdout).readlines())
+    return list(l.decode().strip() for l in StringIO(stdout).readlines())
 
 
 def git_show_fmt(repo, revision, fmt):
