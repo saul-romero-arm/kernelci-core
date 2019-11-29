@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Copyright (C) 2019 Collabora Limited
 # Author: Michal Galka <michal.galka@collabora.com>
@@ -17,11 +17,9 @@
 # along with this library; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-import argparse
 import sys
 
-from kernelci.cli import Args, Command
-import kernelci.cli
+from kernelci.cli import Args, Command, parse_args
 import kernelci.config.rootfs
 
 # -----------------------------------------------------------------------------
@@ -30,14 +28,21 @@ import kernelci.config.rootfs
 
 
 class cmd_validate(Command):
-    help = "Lists all rootfs configs"
+    help = "Validate the rootfs YAML configuration"
 
     def __call__(self, config_data, *args, **kwargs):
         rootfs_configs = config_data['rootfs_configs']
-        print(rootfs_configs)
         for config_name, config in rootfs_configs.items():
-            print(config.name)
-            print('\t{}'.format(config.rootfs_type))
+            print(config_name)
+            print('\trootfs_type: {}'.format(config.rootfs_type))
+            print('\tarch_list: {}'.format(config.arch_list))
+            print('\tdebian_release: {}'.format(config.debian_release))
+            print('\textra_packages: {}'.format(config.extra_packages))
+            print('\textra_packages_remove: {}'
+                  .format(config.extra_packages_remove))
+            print('\textra_files_remove: {}'.format(config.extra_files_remove))
+            print('\tscript: {}'.format(config.script))
+            return True
 
 
 # -----------------------------------------------------------------------------
@@ -45,11 +50,7 @@ class cmd_validate(Command):
 #
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser("kci_rootfs")
-    parser.add_argument("--yaml-rootfs-configs", default="rootfs-configs.yaml",
-                        help="Path to the YAML rootfs configs file")
-    kernelci.cli.add_subparser(parser, globals())
-    args = parser.parse_args()
-    rootfs_configs = kernelci.config.rootfs.from_yaml(args.yaml_rootfs_configs)
-    status = args.func(rootfs_configs, args)
+    args = parse_args("kci_rootfs", "rootfs-configs.yaml", globals())
+    configs = kernelci.config.rootfs.from_yaml(args.yaml_configs)
+    status = args.func(configs, args)
     sys.exit(0 if status is True else 1)
