@@ -21,7 +21,6 @@ import argparse
 import sys
 
 from kernelci.cli import Args, Command
-import kernelci.cli
 import kernelci.config.rootfs
 
 # -----------------------------------------------------------------------------
@@ -36,8 +35,15 @@ class cmd_validate(Command):
         rootfs_configs = config_data['rootfs_configs']
         print(rootfs_configs)
         for config_name, config in rootfs_configs.items():
-            print(config.name)
-            print('\t{}'.format(config.rootfs_type))
+            print('\trootfs_type: {}'.format(config.rootfs_type))
+            print('\tarch_list: {}'.format(config.arch_list))
+            print('\tdebian_release: {}'.format(config.debian_release))
+            print('\textra_packages: {}'.format(config.extra_packages))
+            print('\textra_packages_remove: {}'
+                  .format(config.extra_packages_remove))
+            print('\textra_files_remove: {}'.format(config.extra_files_remove))
+            print('\tscript: {}'.format(config.script))
+            print('\tdocker_image: {}'.format(config.docker_image))
 
 
 # -----------------------------------------------------------------------------
