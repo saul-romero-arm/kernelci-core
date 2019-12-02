@@ -64,7 +64,7 @@ def is_infra_error(cb):
     return job_meta.get('error_type') == "Infrastructure"
 
 
-def handle_boot(cb):
+def handle_boot(cb, verbose):
     job_status = cb['status']
     print("Status: {}".format(LAVA_JOB_RESULT_NAMES[job_status]))
     return BOOT_STATUS_MAP.get(job_status, BISECT_SKIP)
@@ -119,10 +119,13 @@ def _get_dotted_test_names(results, dotted, path=None):
             dotted['.'.join(res_path)] = value
 
 
-def handle_test(cb, full_case_name):
+def handle_test(cb, full_case_name, verbose):
     results = _parse_results(cb['results'])
     plan_name = yaml.safe_load(cb['definition'])['metadata']['test.plan']
     results = {plan_name: results}
+    if verbose:
+        print("Results:")
+        print(json.dumps(results, indent='  '))
     dotted = dict()
     _get_dotted_test_names(results, dotted)
 
@@ -146,9 +149,9 @@ def main(args):
         print("Infrastructure error")
         ret = BISECT_SKIP
     elif args.case:
-        ret = handle_test(cb, args.case)
+        ret = handle_test(cb, args.case, args.verbose)
     else:
-        ret = handle_boot(cb)
+        ret = handle_boot(cb, args.verbose)
 
     sys.exit(ret)
 
@@ -161,5 +164,7 @@ if __name__ == '__main__':
                         help="Secret authorization token")
     parser.add_argument("--case",
                         help="Test case name in dotted syntax")
+    parser.add_argument("--verbose", action='store_true',
+                        help="Verbose output")
     args = parser.parse_args()
     main(args)
