@@ -159,7 +159,6 @@ def send_result(args, log_file_name, token, api):
         'Content-Type': 'application/json',
     }
     data_map = {
-        'type': 'type',
         'arch': 'arch',
         'job': 'tree',
         'kernel': 'kernel',
@@ -168,12 +167,15 @@ def send_result(args, log_file_name, token, api):
         'build_environment': 'build_environment',
         'lab_name': 'lab',
         'device_type': 'target',
+        'plan': 'plan',
+        'case': 'case',
         'good_commit': 'good',
         'bad_commit': 'bad',
     }
     data = {k: getattr(args, v) for k, v in data_map.items()}
     kdir = args.kdir
     data.update({
+        'type': 'boot' if args.plan == 'boot' else 'test',
         'log': log_file_name,
         'good_summary': git_summary(kdir, args.good),
         'bad_summary': git_summary(kdir, args.bad),
@@ -192,7 +194,6 @@ def send_report(args, log_file_name, token, api):
         'Content-Type': 'application/json',
     }
     data_map = {
-        'type': 'type',
         'job': 'tree',
         'kernel': 'kernel',
         'git_branch': 'branch',
@@ -201,6 +202,8 @@ def send_report(args, log_file_name, token, api):
         'build_environment': 'build_environment',
         'lab_name': 'lab',
         'device_type': 'target',
+        'plan': 'plan',
+        'case': 'case',
         'good_commit': 'good',
         'bad_commit': 'bad',
         'subject': 'subject',
@@ -213,6 +216,7 @@ def send_report(args, log_file_name, token, api):
     cc = cc.difference(to)
     data.update({
         'report_type': 'bisect',
+        'type': 'boot' if args.plan == 'boot' else 'test',
         'log': log_file_name,
         'format': ['txt'],
         'send_to': list(to),
@@ -273,8 +277,10 @@ if __name__ == '__main__':
                         help="verified status")
     parser.add_argument("--revert", default="SKIPPED",
                         help="revert check status")
-    parser.add_argument("--type", default='boot',
-                        help="bisection type")
+    parser.add_argument("--plan",
+                        help="test plan name")
+    parser.add_argument("--case",
+                        help="test case name")
     parser.add_argument("--kdir", required=True,
                         help="path to the kernel directory")
     parser.add_argument("--subject", required=True,

@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 
 /*
-  Copyright (C) 2017, 2018 Collabora Limited
+  Copyright (C) 2017, 2018, 2019 Collabora Limited
   Author: Guillaume Tucker <guillaume.tucker@collabora.com>
 
   This module is free software; you can redistribute it and/or modify it under
@@ -57,6 +57,8 @@ TEST_PLAN
   Name of the KernelCI test plan (e.g. baseline)
 TEST_PLAN_VARIANT:
   Name of the KernelCI test plan variant (e.g. baseline_qemu)
+TEST_CASE
+  Optional test case name in dotted syntax (i.e. suite.set.case)
 TEST_RUNS (1)
   Number of LAVA jobs to run before considering pass or fail.
 KCI_API_URL (https://api.kernelci.org)
@@ -364,6 +366,7 @@ def getResult(kci_core, hook) {
 PYTHON_EGG_CACHE=${egg_cache} \
 ./lava-v2-callback.py \
 --token=${SECRET} \
+--case=${params.TEST_CASE} \
 ${json_file}
 """)
         }
@@ -513,6 +516,8 @@ PYTHON_EGG_CACHE=${egg_cache} \
 --tree=${params.KERNEL_TREE} \
 --kernel=${params.KERNEL_NAME} \
 --branch=${params.KERNEL_BRANCH} \
+--plan=${params.TEST_PLAN} \
+--case=${params.TEST_CASE} \
 --good=${params.GOOD_COMMIT} \
 --bad=${params.BAD_COMMIT} \
 --verify=${checks['verify']} \
@@ -695,17 +700,12 @@ node("docker && bisection") {
     Defconfig: ${params.DEFCONFIG}
     Compiler:  ${params.BUILD_ENVIRONMENT}
     Plan:      ${params.TEST_PLAN}
-    Variant:   ${params.TEST_PLAN_VARIANT}"""
+    Variant:   ${params.TEST_PLAN_VARIANT}
+    Test case: ${params.TEST_CASE}"""
     print("""\
     Good:      ${params.GOOD_COMMIT}
     Bad:       ${params.BAD_COMMIT}
 ${params_summary}""")
-
-    if (params.TEST_PLAN != 'boot') {
-        echo "Only doing boot bisections for now, aborting."
-        currentBuild.result = 'ABORTED'
-        return
-    }
 
     if (params.LABS_WHITELIST) {
         def labs = params.LABS_WHITELIST.tokenize(' ')
