@@ -122,3 +122,7 @@ labs:
             - baseline
             - boot
             - kselftest
+
+  lab-nxp:
+    lab_type: lava
+    url: 'http://59.144.98.45/RPC2/'
