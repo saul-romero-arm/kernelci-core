@@ -562,7 +562,7 @@ def _kernel_config_enabled(dot_config, name):
 
 
 def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
-                 verbose=False, output_path=None, mod_path='_modules_'):
+                 verbose=False, output_path=None, mod_path=None):
     """Build a linux kernel
 
     *build_env* is a BuildEnvironment object
@@ -633,11 +633,12 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
             result = _run_make(target='dtbs', **kwargs)
     build_time = time.time() - start_time
 
-    if result and mods and mod_path:
-        abs_mod_path = os.path.join(output_path, mod_path)
-        if os.path.exists(abs_mod_path):
-            shutil.rmtree(abs_mod_path)
-        os.makedirs(abs_mod_path)
+    if result and mods:
+        if not mod_path:
+            mod_path = os.path.join(output_path, '_modules_')
+        if os.path.exists(mod_path):
+            shutil.rmtree(mod_path)
+        os.makedirs(mod_path)
         opts.update({
             'INSTALL_MOD_PATH': mod_path,
             'INSTALL_MOD_STRIP': '1',
@@ -689,8 +690,7 @@ def build_kernel(build_env, kdir, arch, defconfig=None, jopt=None,
 
 def install_kernel(kdir, tree_name, tree_url, git_branch, git_commit=None,
                    describe=None, describe_v=None, output_path=None,
-                   publish_path=None,
-                   install='_install_', mod_path='_modules_'):
+                   publish_path=None, install_path=None, mod_path=None):
     """Install the kernel binaries in a directory for a given built revision
 
     Installing the kernel binaries into a new directory consists of creating a
@@ -706,13 +706,14 @@ def install_kernel(kdir, tree_name, tree_url, git_branch, git_commit=None,
     *describe* is the "git describe" for the commit
     *describe_v* is the verbose "git describe" for the commit
     *output_path" is the path to the directory where the kernel was built
-    *install* is the path where to install the kernel inside kdir
+    *install_path* is the path where to install the kernel
     *mod_path* is the path where the modules were installed
 
     The returned value is True if it was done successfully or False if an error
     occurred.
     """
-    install_path = os.path.join(kdir, install)
+    if not install_path:
+        install_path = os.path.join(kdir, '_install_')
     if not output_path:
         output_path = os.path.join(kdir, 'build')
     if not git_commit:
@@ -784,13 +785,13 @@ def install_kernel(kdir, tree_name, tree_url, git_branch, git_commit=None,
         json.dump({'dtbs': sorted(dtb_list)}, json_file, indent=4)
 
     modules_tarball = None
-    if mod_path:
-        abs_mod_path = os.path.join(output_path, mod_path)
-        if os.path.exists(abs_mod_path):
-            modules_tarball = 'modules.tar.xz'
-            modules_tarball_path = os.path.join(install_path, modules_tarball)
-            shell_cmd("tar -C{path} -cJf {tarball} .".format(
-                path=abs_mod_path, tarball=modules_tarball_path))
+    if not mod_path:
+        mod_path = os.path.join(output_path, '_modules_')
+    if os.path.exists(mod_path):
+        modules_tarball = 'modules.tar.xz'
+        modules_tarball_path = os.path.join(install_path, modules_tarball)
+        shell_cmd("tar -C{path} -cJf {tarball} .".format(
+            path=mod_path, tarball=modules_tarball_path))
 
     build_env = bmeta['build_environment']
     defconfig_full = bmeta['defconfig_full']
@@ -823,7 +824,7 @@ def install_kernel(kdir, tree_name, tree_url, git_branch, git_commit=None,
     return True
 
 
-def push_kernel(kdir, api, token, install='_install_'):
+def push_kernel(kdir, api, token, install_path=None):
     """Push the kernel binaries to the storage server
 
     Push the kernel image, the modules tarball, the dtbs and the build.json
@@ -832,12 +833,13 @@ def push_kernel(kdir, api, token, install='_install_'):
     *kdir* is the path to the kernel source directory
     *api* is the URL of the KernelCI backend API
     *token* is the token to use with the KernelCI backend API
-    *install* is the path to the installation directory inside kdir
+    *install* is the path to the installation directory
 
     The returned value is True if it was done successfully or False if an error
     occurred.
     """
-    install_path = os.path.join(kdir, install)
+    if not install_path:
+        install_path = os.path.join(kdir, '_install_')
 
     with open(os.path.join(install_path, 'bmeta.json')) as f:
         bmeta = json.load(f)
@@ -854,7 +856,7 @@ def push_kernel(kdir, api, token, install='_install_'):
     return True
 
 
-def publish_kernel(kdir, install='_install_', api=None, token=None,
+def publish_kernel(kdir, install_path=None, api=None, token=None,
                    json_path=None):
     """Publish a kernel via the KernelCI backend API or in a JSON file
 
@@ -866,7 +868,7 @@ def publish_kernel(kdir, install='_install_', api=None, token=None,
     backend API again.
 
     *kdir* is the path to the kernel source directory
-    *install* is the directory where the binaries were installed inside kdir
+    *install_path* is the directory where the binaries were installed
     *api* is the URL of the KernelCI backend API
     *token* is the token to use with the KernelCI backend API
     *json_path* is the path to a JSON file where to store the publish data
@@ -874,7 +876,9 @@ def publish_kernel(kdir, install='_install_', api=None, token=None,
     The returned value is True if it was done successfully or False if an error
     occurred.
     """
-    install_path = os.path.join(kdir, install)
+
+    if not install_path:
+        install_path = os.path.join(kdir, '_install_')
 
     with open(os.path.join(install_path, 'bmeta.json')) as f:
         bmeta = json.load(f)
