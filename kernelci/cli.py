@@ -189,6 +189,16 @@ class Args(object):
         'help': "Path the output directory",
     }
 
+    install = {
+        'name': '--install',
+        'help': "Path to the install directory",
+    }
+
+    mod_path = {
+        'name': '--mod-path',
+        'help': "Path to the installed modules",
+    }
+
     json_path = {
         'name': '--json-path',
         'help': "Path to the JSON file",
