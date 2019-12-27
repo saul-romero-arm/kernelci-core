@@ -241,6 +241,11 @@ class Args(object):
         'help': "Relative path where build artifacts are published",
     }
 
+    debos_path = {
+        'name': '--debos-path',
+        'help': "Path to the debos files",
+    }
+
 
 class Command(object):
     """A command helper class.
