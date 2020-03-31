@@ -74,6 +74,7 @@ def get_last_commit(config, storage):
         file_name=_get_last_commit_file_name(config))
     print(last_commit_url)
     last_commit_resp = requests.get(last_commit_url)
+    print(last_commit_resp)
     if last_commit_resp.status_code != 200:
         return False
     return last_commit_resp.text.strip()
