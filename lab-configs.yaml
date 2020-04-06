@@ -6,4 +6,4 @@ labs:
     filters:
       - whitelist:
           plan:
-            - boot
+            - boot_qemu
