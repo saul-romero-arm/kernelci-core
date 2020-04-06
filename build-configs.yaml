@@ -114,3 +114,10 @@ build_configs:
   saurom01:
     tree: saurom01
     branch: 'master'
+    variants:
+      gcc-8:
+        build_environment: gcc-8
+        fragments: [debug]
+        architectures:
+          arm: *arm_arch
+          arm64: *arm64_arch
