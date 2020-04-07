@@ -2,7 +2,7 @@ labs:
 
   lab-qt:
     lab_type: lava
-    url: 'http://10.1.195.38/RPC2/'
+    url: 'http://10.1.195.38:10080/RPC2/'
     filters:
       - whitelist:
           plan:
