@@ -401,7 +401,7 @@ class TestConfig(YAMLObject):
 
     def match(self, arch, flags, config, plan=None):
         print("Arch={},Flags={},Config={}".format(arch,flags,config))
-        print("Dev={}, Dev arch={}".format(self.device, self.device_type.arch))
+        print("Dev={}, Dev arch={}".format(self.device_type, self.device_type.arch))
         return (
             (plan is None or (
                 plan in self._test_plans and
