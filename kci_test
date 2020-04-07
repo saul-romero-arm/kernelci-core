@@ -121,15 +121,18 @@ class cmd_generate(Command):
 
         lab = lab_configs['labs'][args.lab]
         api = kernelci.lab.get_api(lab, args.user, args.token, args.lab_json)
+        print("Args:{}".format(args))
 
         if args.target and args.plan:
             target = test_configs['device_types'][args.target]
             plan = test_configs['test_plans'][args.plan]
+            print("Target:{}, Plan:{}, test_configs:{}".format(target, plan, test_configs))
             jobs_list = [(target, plan)]
         else:
             jobs_list = []
             configs = kernelci.test.match_configs(
                 test_configs['test_configs'], bmeta, dtbs, lab)
+            print("Configs:{}, Test configs:{}".format(configs, test_configs))
             for device_type, plan in configs:
                 if not api.device_type_online(device_type):
                     continue

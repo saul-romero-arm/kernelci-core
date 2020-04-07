@@ -1804,6 +1804,10 @@ test_configs:
       - baseline_qemu
       - boot_qemu
 
+  - device_type: qemu
+    test_plans:
+      - boot_qemu
+
   - device_type: qemu_arm-vexpress-a9
     test_plans:
       - baseline_qemu
