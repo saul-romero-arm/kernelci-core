@@ -119,6 +119,9 @@ build_configs:
         build_environment: gcc-8
         fragments: [debug]
         architectures:
+          arm64:
+            filters:
+              - whitelist: {defconfig: ['defconfig']}
           x86_64:
             base_defconfig: 'x86_64_defconfig'
             filters:
