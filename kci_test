@@ -132,7 +132,7 @@ class cmd_generate(Command):
             jobs_list = []
             configs = kernelci.test.match_configs(
                 test_configs['test_configs'], bmeta, dtbs, lab)
-            print("Configs:{}, Test configs:{}".format(configs, test_configs))
+            print("------>Configs:{}".format(configs))
             for device_type, plan in configs:
                 if not api.device_type_online(device_type):
                     continue

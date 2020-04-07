@@ -119,9 +119,7 @@ build_configs:
         build_environment: gcc-8
         fragments: [debug]
         architectures:
-          arm:
-           filters:
-              - whitelist: {defconfig: ['zeus_defconfig']}
-          arm64:
-           filters:
-              - whitelist: {defconfig: ['allnoconfig']}
+          x86_64:
+            base_defconfig: 'x86_64_defconfig'
+            filters:
+              - whitelist: {defconfig: ['x86_64_defconfig']}
