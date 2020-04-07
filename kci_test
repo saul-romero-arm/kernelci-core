@@ -141,7 +141,7 @@ class cmd_generate(Command):
                     continue
                 jobs_list.append((device_type, plan))
 
-		print("Lab:{}, jobs_list:{}".format(lab, jobs_list))
+        print("Lab:{}, jobs_list:{}".format(lab, jobs_list))
         # ToDo: deal with a JSON file containing a list of builds to iterate
         # over, such as the one produced by "kci_build publish" or saved as a
         # result of a new command "kci_build get_meta" to download meta-data
