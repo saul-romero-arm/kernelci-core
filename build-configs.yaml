@@ -33,6 +33,9 @@ fragments:
   x86_kvm_guest:
     path: "kernel/configs/kvm_guest.config"
 
+  arm64_kvm_for-next-core_defconfig:
+    path: "kernel/configs/
+
 
 build_environments:
 
@@ -117,12 +120,8 @@ build_configs:
     variants:
       gcc-8:
         build_environment: gcc-8
-        fragments: [debug]
+        fragments: [arm64_kvm_for-next-core_defconfig]
         architectures:
           arm64:
             filters:
               - whitelist: {defconfig: ['defconfig']}
-          x86_64:
-            base_defconfig: 'x86_64_defconfig'
-            filters:
-              - whitelist: {defconfig: ['x86_64_defconfig']}
