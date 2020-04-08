@@ -1834,7 +1834,7 @@ test_configs:
       - baseline-uefi_arm64
       - boot_qemu
 
-  - device_type: qemu_arm641-virt-gicv3
+  - device_type: qemu_arm64-virt-gicv3
     test_plans:
       - baseline_qemu
       - baseline-uefi_arm64
