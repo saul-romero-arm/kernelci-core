@@ -34,7 +34,7 @@ fragments:
     path: "kernel/configs/kvm_guest.config"
 
   arm64_kvm_for-next-core_defconfig:
-    path: "kernel/configs/
+    path: "kernel/configs/KVM_arm64_for-next-core_defconfig.config"
 
 
 build_environments:
