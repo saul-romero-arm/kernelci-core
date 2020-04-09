@@ -124,4 +124,4 @@ build_configs:
         architectures:
           arm64:
             filters:
-              - whitelist: {defconfig: ['defconfig']}
+              - whitelist: {defconfig: ['defconfig+kernel/configs/KVM_arm64_for-next-core_defconfig.config']}

@@ -7,3 +7,4 @@ labs:
       - whitelist:
           plan:
             - boot_qemu
+            - baseline_qemu
