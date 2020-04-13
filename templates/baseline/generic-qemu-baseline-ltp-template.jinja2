@@ -56,5 +56,30 @@ actions:
       login_prompt: 'login:'
       username: root
 
-{% include 'baseline/baseline.jinja2' %}
+- test:
+{%- if test_namespace %}
+    namespace: {{ test_namespace }}
+{%- endif %}
+    timeout:
+      minutes: 1
+    definitions:
+    - repository:
+        metadata:
+          format: Lava-Test Test Definition 1.0
+          name: baseline
+          description: "Baseline LTP Terst Plan"
+          os:
+            - debian
+          scope:
+            - functional
+          environment:
+            - lava-test-shell
+        run:
+          steps:
+            - ls -al /opt
+            - ls -al /root
+      from: inline
+      name: check
+      path: inline/check.yaml
+
 {% endblock %}
