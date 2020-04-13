@@ -1,0 +1,60 @@
+{% extends 'base/kernel-ci-base.jinja2' %}
+{% if arch == "arm" %}
+{% set console_dev = 'ttyAMA0' %}
+{% endif %}
+{% if arch == "arm64" %}
+{% set console_dev = 'ttyAMA0' %}
+{% endif %}
+{% if arch == 'x86_64' %}
+{% set console_dev = 'ttyS0' %}
+{% endif %}
+{% if arch == 'i386' %}
+{% set console_dev = 'ttyS0' %}
+{% endif %}
+{% block metadata %}
+{{ super() }}
+{% endblock %}
+{% block main %}
+{{ super() }}
+{% endblock %}
+{% block actions %}
+
+actions:
+- deploy:
+    timeout:
+      minutes: 3
+    to: tmpfs
+    os: oe
+    images:
+{%- if bios_url %}
+      bios:
+        image_arg: '-bios {bios}'
+        url: {{ bios_url }}
+{%- endif %}
+      kernel:
+{%- block image_arg %}
+        image_arg: '-kernel {kernel} -append "console={{ console_dev }},115200 root=/dev/vda1 rw debug verbose {{ extra_kernel_args }}"'
+{%- endblock %}
+        url: {{ kernel_url }}
+      drive:
+        image_arg: '-drive {drive}'
+        url: {{ initrd_url }}
+{%- if dtb_url %}
+      dtb:
+        image_arg: '-dtb {dtb}'
+        url: {{ dtb_url }}
+{% endif %}
+
+- boot:
+    timeout:
+      minutes: 5
+    method: qemu
+    media: tmpfs
+    prompts:
+      - root@(.*):~#
+    auto_login:
+      login_prompt: 'login:'
+      username: root
+
+{% include 'baseline/baseline.jinja2' %}
+{% endblock %}

@@ -15,7 +15,7 @@ file_system_types:
       mipsel:  [{arch: mips}]
 
   debian:
-    url: 'http://storage.kernelci.org/images/rootfs/debian'
+    url: 'http://files.oss.arm.com/downloads/kernel-ci/filesystems'
     arch_map:
       armhf: [{arch: arm}]
       amd64: [{arch: x86_64}]
@@ -55,6 +55,11 @@ file_systems:
     type: debian
     ramdisk: 'buster-v4l2/20200325.0/{arch}/rootfs.cpio.gz'
 
+  debian_stretch_ltp:
+    type: debian
+    nfs: 'debian_stretch_{arch}_ltp20190930.tar.gz'
+    
+
 
 test_plan_default_filters:
 
@@ -89,6 +94,18 @@ test_plans:
     pattern: 'baseline/generic-qemu-baseline-template.jinja2'
     filters:
       - blacklist: *kselftest_defconfig_clang_environment_filter
+      
+  baseline-ltp_qemu:
+    base_name: baseline
+    rootfs: debian_stretch_ltp
+    pattern: 'baseline/generic-qemu-baseline-ltp-template.jinja2'
+    filters:
+      - blacklist: *clang_environment_filter
+
+  baseline_qemu_nfs:
+    base_name: baseline_qemu
+    rootfs: debian_stretch_ltp
+    pattern: 'baseline/generic-qemu-baseline-template.jinja2'
 
   baseline-fastboot:
     rootfs: buildroot_baseline_ramdisk
@@ -164,7 +181,7 @@ test_plans:
     pattern: 'boot/generic-qemu-boot-template.jinja2'
     filters:
       - blacklist: *clang_environment_filter
-
+      
   cros-ec:
     rootfs: debian_buster-cros-ec_ramdisk
 
@@ -1833,14 +1850,7 @@ test_configs:
       - baseline_qemu
       - baseline-uefi_arm64
       - boot_qemu
-
-  - device_type: qemu_arm64-virt-gicv3
-    test_plans:
-      - baseline_qemu
-      - baseline-uefi_arm64
-      - boot_qemu
-      - simple_qemu
-      - v4l2-compliance-vivid
+      - baseline-ltp_qemu
 
   - device_type: qemu_i386
     test_plans:

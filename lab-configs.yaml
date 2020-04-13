@@ -6,5 +6,4 @@ labs:
     filters:
       - whitelist:
           plan:
-            - boot_qemu
-            - baseline_qemu
+            - baseline-ltp_qemu
