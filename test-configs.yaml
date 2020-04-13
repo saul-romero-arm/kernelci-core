@@ -15,7 +15,7 @@ file_system_types:
       mipsel:  [{arch: mips}]
 
   debian:
-    url: 'http://files.oss.arm.com/downloads/kernel-ci/filesystems'
+    url: 'http://files.oss.arm.com/downloads/personal/saurom01/filesystems'
     arch_map:
       armhf: [{arch: arm}]
       amd64: [{arch: x86_64}]
