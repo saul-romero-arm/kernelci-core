@@ -37,8 +37,8 @@ actions:
 {%- endblock %}
         url: {{ kernel_url }}
       drive:
-        image_arg: '-drive {drive}'
-        url: {{ initrd_url }}
+        image_arg: '-drive file={drive}'
+        url: {{ nfsrootfs_url }}
 {%- if dtb_url %}
       dtb:
         image_arg: '-dtb {dtb}'
