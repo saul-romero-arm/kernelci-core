@@ -57,7 +57,7 @@ file_systems:
 
   debian_stretch_ltp:
     type: debian
-    nfs: 'debian_stretch_{arch}_ltp20190930.tar.gz'
+    nfs: 'debian_stretch_{arch}_ltp20190930.qcow2'
     
 
 
