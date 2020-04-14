@@ -116,7 +116,7 @@ build_configs:
 
   saurom01:
     tree: saurom01
-    branch: 'master'
+    branch: 'qt/for-next'
     variants:
       gcc-8:
         build_environment: gcc-8
