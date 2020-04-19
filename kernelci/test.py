@@ -49,21 +49,21 @@ def match_configs(configs, bmeta, dtbs, lab):
     match = set()
 
     for test_config in configs:
-        print("Matching test config {} against arch {}, flags {} and filters {}:".format(test_config, arch, flags, filters))
+        print("\t1-Matching test config device '{}' against arch {}, flags {} and filters {}:".format(test_config.device_type, arch, flags, filters))
         if not test_config.match(arch, flags, filters):
             continue
         dtb = test_config.device_type.dtb
-        print("Matched!\nMatching test config dtb {} againsts kernel dtb {}".format(dtb, dtbs))
         if dtb and dtb not in dtbs:
             continue
+        print("\t\t2-Matched test config dtb {} againsts kernel dtbs".format(dtb))
         for plan_name, plan in test_config.test_plans.items():
-            print("Matching test plan {} against {}".format(plan, filters))
             if not plan.match(filters):
                 continue
+            print("3-Matched test plan {} against {}".format(plan_name, filters))
             filters['plan'] = plan_name
-            print("Lab {}".format(lab))
             if lab.match(filters):
                 match.add((test_config.device_type, plan))
+            print("Matched Lab {}".format(lab.name))
 
     return match
 
