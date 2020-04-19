@@ -59,11 +59,11 @@ def match_configs(configs, bmeta, dtbs, lab):
         for plan_name, plan in test_config.test_plans.items():
             if not plan.match(filters):
                 continue
-            print("3-Matched test plan {} against {}".format(plan_name, filters))
+            print("\t\t\t3-Matched test plan '{}' filters {} against {}".format(plan_name, plan_name.filters, filters))
             filters['plan'] = plan_name
             if lab.match(filters):
                 match.add((test_config.device_type, plan))
-            print("Matched Lab {}".format(lab.name))
+                print("\t\t\t\t4-Matched Lab '{}' filters {}".format(lab.name, lab.filters))
 
     return match
 
