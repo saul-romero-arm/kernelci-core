@@ -63,7 +63,7 @@ def match_configs(configs, bmeta, dtbs, lab):
             filters['plan'] = plan_name
             if lab.match(filters):
                 match.add((test_config.device_type, plan))
-                print("\t\t\t\t4-Matched Lab '{}' filters {}".format(lab.name, lab.filters))
+                print("\t\t\t\t4-Matched Lab '{}' filters {}".format(lab.name, lab._filters))
 
     return match
 
